@@ -380,10 +380,33 @@ function renderSankey(state) {
 
   nodeGroups
     .append('rect')
-    .attr('x', d => d.x0)
+    .attr('x', d => {
+      // Calculate max edge width connected to this node
+      const connectedLinks = links.filter(l => l.source === d || l.target === d);
+      const maxEdgeWidth = connectedLinks.length > 0 
+        ? Math.max(...connectedLinks.map(l => Math.min(Math.max(0.5, l.width * 0.5), 20)))
+        : 1;
+      
+      // Make node width = max edge width + 2 (1px on each side)
+      const nodeWidth = maxEdgeWidth + 2;
+      const originalWidth = d.x1 - d.x0;
+      const widthDiff = originalWidth - nodeWidth;
+      
+      // Center the node by adjusting x position
+      return d.x0 + widthDiff / 2;
+    })
     .attr('y', d => d.y0)
     .attr('height', d => d.y1 - d.y0)
-    .attr('width', d => d.x1 - d.x0)
+    .attr('width', d => {
+      // Calculate max edge width connected to this node
+      const connectedLinks = links.filter(l => l.source === d || l.target === d);
+      const maxEdgeWidth = connectedLinks.length > 0 
+        ? Math.max(...connectedLinks.map(l => Math.min(Math.max(0.5, l.width * 0.5), 20)))
+        : 1;
+      
+      // Make node width = max edge width + 2 (1px on each side)
+      return maxEdgeWidth + 2;
+    })
     .attr('fill', d => {
       const nodeData = sankeyNodes.find(n => n.name === d.name);
       return getNodeColor(nodeData);
@@ -578,7 +601,21 @@ function renderSankey(state) {
     const isLeft = d.x0 < validWidth / 2;
     const typeInfo = getSourceTypeInfo(nodeData);
     const group = d3.select(this);
-    const textX = isLeft ? d.x1 + 6 : d.x0 - 6;
+    
+    // Calculate actual node width based on connected edges
+    const connectedLinks = links.filter(l => l.source === d || l.target === d);
+    const maxEdgeWidth = connectedLinks.length > 0 
+      ? Math.max(...connectedLinks.map(l => Math.min(Math.max(0.5, l.width * 0.5), 20)))
+      : 1;
+    const nodeWidth = maxEdgeWidth + 2;
+    const originalWidth = d.x1 - d.x0;
+    const widthDiff = originalWidth - nodeWidth;
+    
+    // Calculate adjusted node boundaries
+    const adjustedX0 = d.x0 + widthDiff / 2;
+    const adjustedX1 = adjustedX0 + nodeWidth;
+    
+    const textX = isLeft ? adjustedX1 + 6 : adjustedX0 - 6;
     const textY = (d.y1 + d.y0) / 2;
     const padding = 4;
     
