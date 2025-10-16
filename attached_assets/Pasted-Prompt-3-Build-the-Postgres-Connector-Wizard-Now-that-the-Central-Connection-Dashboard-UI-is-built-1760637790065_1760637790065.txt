@@ -1,0 +1,23 @@
+Prompt 3: Build the Postgres Connector Wizard
+"Now that the Central Connection Dashboard UI is built, let's make the '+ Add New Connection' button functional. This prompt will create the full-stack logic for adding a new PostgreSQL connection.
+
+Create a connections table in our Supabase project. It should have the following columns: id (primary key), created_at, connection_name (text), connection_type (text, default 'PostgreSQL'), host (text), port (number), database_name (text), db_user (text), and encrypted_password (text).
+
+Build a multi-step modal wizard in React. When the user clicks '+ Add New Connection', this modal should appear. Step 1 asks for 'Connection Name'. Step 2 presents a form with fields for 'Host', 'Port', 'Database Name', 'User', and 'Password'.
+
+Create two backend API endpoints in Express.js:
+
+A POST endpoint at /api/connections/test that receives connection details from the form. It should attempt to connect to the external Postgres database and return a simple success or failure message.
+
+A POST endpoint at /api/connections/create. It will receive the final connection details, encrypt the password using a key from Replit Secrets, and save the entire record to our connections table in Supabase.
+
+Connect the UI to the backend. The wizard should have a 'Test Connection' button that calls the /test endpoint. The final 'Save' button should call the /create endpoint. After a successful save, the modal should close and the new connection should appear in the dashboard's table."
+
+Prompt 4: Create the Connection Details & Logging Page
+"With connections now being added to the dashboard, the next step is to make them clickable to view their details and logs.
+
+Enable dynamic routing. Modify the dashboard's connection table so that each row is a link that navigates to a unique URL, like /connections/[connection_id], using the connection's ID from Supabase.
+
+Create the details page UI. This new page should fetch and display the connection's name and type at the top. Below this, create a simple log viewer component that looks like a terminal window with a dark background.
+
+Create a backend API endpoint. Build a GET endpoint at /api/connections/[connection_id]/logs. For now, this endpoint doesn't need to run a real job; it should just return mock log data as a JSON array of strings, for example: ['[timestamp] Connection initiated...', '[timestamp] Authentication successful.', '[timestamp] 10,452 rows fetched.', '[timestamp] Sync complete.']."
