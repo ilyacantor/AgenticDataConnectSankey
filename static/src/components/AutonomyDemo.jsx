@@ -1,18 +1,29 @@
-import React, { useState, useEffect } from 'react';
-
-export default function AutonomyDemo({ onComplete }) {
-  const [step, setStep] = useState(0);
-  const [showThinking, setShowThinking] = useState(false);
-  const [thinkingText, setThinkingText] = useState('');
-  const [chartBars, setChartBars] = useState([
+function AutonomyDemo({ onComplete }) {
+  const [step, setStep] = React.useState(0);
+  const [showThinking, setShowThinking] = React.useState(false);
+  const [thinkingText, setThinkingText] = React.useState('');
+  const [chartBars, setChartBars] = React.useState([
     { name: 'Salesforce', value: 450, color: 'bg-blue-500' },
     { name: 'Dynamics', value: 380, color: 'bg-purple-500' }
   ]);
-  const [totalRevenue, setTotalRevenue] = useState(830);
+  const [totalRevenue, setTotalRevenue] = React.useState(830);
 
-  useEffect(() => {
-    runDemo();
-  }, []);
+  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+  const animateThinking = async () => {
+    const messages = [
+      'Analyzing HubSpot objects...',
+      'Semantic match: HubSpot.Deals → UnifiedOntology.RevenueOpportunity',
+      'Mapping fields: deal_name → opportunity_name',
+      'Mapping fields: deal_value → opportunity_amount',
+      'Validation passed. Publishing schema...'
+    ];
+
+    for (const msg of messages) {
+      setThinkingText(msg);
+      await wait(800);
+    }
+  };
 
   const runDemo = async () => {
     // Step 1: System notification
@@ -54,22 +65,9 @@ export default function AutonomyDemo({ onComplete }) {
     if (onComplete) onComplete();
   };
 
-  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-  const animateThinking = async () => {
-    const messages = [
-      'Analyzing HubSpot objects...',
-      'Semantic match: HubSpot.Deals → UnifiedOntology.RevenueOpportunity',
-      'Mapping fields: deal_name → opportunity_name',
-      'Mapping fields: deal_value → opportunity_amount',
-      'Validation passed. Publishing schema...'
-    ];
-
-    for (const msg of messages) {
-      setThinkingText(msg);
-      await wait(800);
-    }
-  };
+  React.useEffect(() => {
+    runDemo();
+  }, []);
 
   return (
     <div className="fixed inset-0 z-[9999] bg-slate-900">
