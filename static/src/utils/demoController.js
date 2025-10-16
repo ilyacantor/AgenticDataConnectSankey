@@ -101,10 +101,19 @@ class DemoController {
 
     inputElement.focus();
     
+    // For React controlled inputs, we need to set the value and trigger change events
+    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+    
     for (let i = 0; i < text.length; i++) {
       const currentText = text.substring(0, i + 1);
-      inputElement.value = currentText;
+      
+      // Set value using native setter to bypass React
+      nativeInputValueSetter.call(inputElement, currentText);
+      
+      // Dispatch both input and change events for React
       inputElement.dispatchEvent(new Event('input', { bubbles: true }));
+      inputElement.dispatchEvent(new Event('change', { bubbles: true }));
+      
       await this.wait(delay);
     }
   }
