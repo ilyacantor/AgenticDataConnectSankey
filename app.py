@@ -629,7 +629,7 @@ def heuristic_plan(ontology: Dict[str, Any], source_key: str, tables: Dict[str, 
         # PROD MODE OFF: Use hard-wired heuristic rules (fast, deterministic)
         log("⚡ Prod Mode OFF: Using heuristic domain filtering")
         FINOPS_SOURCES = {"snowflake", "sap", "netsuite", "legacy_sql"}
-        REVOPS_SOURCES = {"dynamics", "salesforce", "supabase", "mongodb"}
+        REVOPS_SOURCES = {"dynamics", "salesforce", "supabase", "mongodb", "hubspot"}
         FINOPS_ENTITIES = {"aws_resources", "cost_reports"}
         REVOPS_ENTITIES = {"account", "opportunity", "health", "usage"}
         

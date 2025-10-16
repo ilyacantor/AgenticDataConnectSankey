@@ -365,6 +365,58 @@ def generate_sap_invoices():
     
     return invoices
 
+def generate_hubspot_deals():
+    """Generate HubSpot Deals data for RevOps"""
+    deals = []
+    
+    deal_stages = ['Prospecting', 'Qualified', 'Proposal Sent', 'Negotiation', 'Closed Won', 'Closed Lost']
+    deal_types = ['New Business', 'Renewal', 'Upsell', 'Cross-sell']
+    sources = ['Inbound', 'Outbound', 'Partner', 'Referral', 'Event']
+    industries = ['Technology', 'Healthcare', 'Finance', 'Retail', 'Manufacturing']
+    company_names = ['Acme Corp', 'TechStart Inc', 'Global Solutions', 'Innovate LLC', 'DataFlow Systems',
+                    'CloudBridge', 'NextGen Analytics', 'Enterprise Hub', 'Digital Dynamics', 'SmartOps Co',
+                    'FutureTech', 'Quantum Insights', 'DataCore Ltd', 'SyncFlow Inc', 'Apex Industries']
+    
+    for i in range(15):  # <20 per constraint
+        deal_stage = random.choice(deal_stages)
+        amount = random.randint(10000, 500000)
+        create_date = datetime.now() - timedelta(days=random.randint(30, 180))
+        close_date = create_date + timedelta(days=random.randint(30, 90))
+        
+        deal = {
+            'deal_id': f'DEAL-{random.randint(10000, 99999)}',
+            'deal_name': f'{random.choice(company_names)} - {random.choice(deal_types)} Q{random.randint(1,4)} 2024',
+            'amount': str(amount),
+            'close_date': close_date.strftime('%Y-%m-%d'),
+            'expected_close_date': close_date.strftime('%Y-%m-%d'),
+            'deal_stage': deal_stage,
+            'deal_type': random.choice(deal_types),
+            'probability': str(random.choice([10, 25, 50, 75, 90, 100])),
+            'deal_owner': f'{random.choice(["John", "Sarah", "Mike", "Emily", "David"])} {random.choice(["Smith", "Johnson", "Williams", "Brown", "Davis"])}',
+            'deal_owner_email': f'sales{random.randint(1,10)}@company.com',
+            'company_name': random.choice(company_names),
+            'company_id': f'COMP-{random.randint(1000, 9999)}',
+            'industry': random.choice(industries),
+            'lead_source': random.choice(sources),
+            'created_date': create_date.strftime('%Y-%m-%d'),
+            'last_modified_date': (create_date + timedelta(days=random.randint(1, 30))).strftime('%Y-%m-%d'),
+            'annual_contract_value': str(amount),
+            'deal_currency': 'USD',
+            'forecast_category': random.choice(['Pipeline', 'Best Case', 'Commit', 'Closed']),
+            'next_step': random.choice(['Send proposal', 'Schedule demo', 'Contract review', 'Final approval', 'Onboarding']),
+            'competitors': random.choice(['Competitor A', 'Competitor B', 'None', 'Multiple']),
+            'num_decision_makers': str(random.randint(1, 5)),
+            'deal_description': f'Enterprise software deal for {random.choice(company_names)}',
+            'contract_term_months': str(random.choice([12, 24, 36])),
+            'renewal_date': (close_date + timedelta(days=365)).strftime('%Y-%m-%d'),
+            'mrr': str(amount // 12),
+            'arr': str(amount),
+        }
+        
+        deals.append(deal)
+    
+    return deals
+
 def write_csv(filename, data):
     """Write data to CSV file"""
     if not data:
@@ -402,9 +454,14 @@ def main():
     invoices = generate_sap_invoices()
     write_csv('schemas/sap/CLOUD_INVOICES.csv', invoices)
     
-    print(f"\n✓ Complete! Total CSV footprint: ~150-200 KB")
-    print(f"✓ Field coverage: 40+ fields for AWS_RESOURCES, 25+ for AWS_COSTS")
+    # Generate HubSpot data
+    deals = generate_hubspot_deals()
+    write_csv('schemas/hubspot/Deals.csv', deals)
+    
+    print(f"\n✓ Complete! Total CSV footprint: ~200-250 KB")
+    print(f"✓ Field coverage: 40+ fields for AWS_RESOURCES, 25+ for AWS_COSTS, 25+ for HubSpot Deals")
     print(f"✓ New RESOURCE_METRICS table adds cloud_usage entity data")
+    print(f"✓ HubSpot Deals data for RevOps integration")
 
 if __name__ == '__main__':
     main()
