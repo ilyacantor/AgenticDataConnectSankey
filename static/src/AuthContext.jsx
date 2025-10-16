@@ -6,6 +6,7 @@ function AuthProvider({ children }) {
   const [loading, setLoading] = React.useState(true);
   const [supabase, setSupabase] = React.useState(null);
   const [roleError, setRoleError] = React.useState(null);
+  const [authEnabled, setAuthEnabled] = React.useState(true);
 
   // Helper to persist role in localStorage
   const persistRole = (userId, role) => {
@@ -29,6 +30,24 @@ function AuthProvider({ children }) {
 
   React.useEffect(() => {
     async function initialize() {
+      // Check if auth is enabled from backend
+      try {
+        const response = await fetch('/state');
+        const data = await response.json();
+        setAuthEnabled(data.auth_enabled);
+        
+        // If auth is disabled, set dummy admin user and skip Supabase
+        if (!data.auth_enabled) {
+          setUser({ id: 'bypass', email: 'auth-disabled@system' });
+          setUserRole('admin');
+          setLoading(false);
+          return;
+        }
+      } catch (error) {
+        console.error('Failed to check auth status:', error);
+      }
+
+      // Auth is enabled - proceed with Supabase
       const client = await initializeSupabase();
       if (client) {
         setSupabase(client);
@@ -181,6 +200,7 @@ function AuthProvider({ children }) {
     userRole,
     loading,
     roleError,
+    authEnabled,
     signUp,
     signIn,
     signOut,

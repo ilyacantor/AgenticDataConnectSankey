@@ -1,5 +1,10 @@
 function ProtectedRoute({ children, requireRole }) {
-  const { user, userRole, loading, roleError } = useAuth();
+  const { user, userRole, loading, roleError, authEnabled } = useAuth();
+
+  // If auth is disabled, always allow access
+  if (!authEnabled) {
+    return children;
+  }
 
   if (loading) {
     return (

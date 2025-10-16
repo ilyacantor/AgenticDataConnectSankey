@@ -14,6 +14,7 @@ AGENTS_CONFIG_PATH = "agents/config.yml"
 SCHEMAS_DIR = "schemas"
 CONF_THRESHOLD = 0.70
 AUTO_PUBLISH_PARTIAL = True
+AUTH_ENABLED = False  # Set to True to enable authentication, False to bypass
 
 if os.getenv("GEMINI_API_KEY"):
     genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
@@ -1066,7 +1067,8 @@ def state():
         "agent_consumption": agent_consumption,
         "selected_sources": SOURCES_ADDED,
         "selected_agents": SELECTED_AGENTS,
-        "dev_mode": DEV_MODE
+        "dev_mode": DEV_MODE,
+        "auth_enabled": AUTH_ENABLED
     })
 
 @app.get("/connect")
