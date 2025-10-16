@@ -56,6 +56,24 @@ function NavBar({onSearch}){
           )}
         </div>
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => {
+              window.location.hash = '#/dashboard';
+              setTimeout(() => {
+                if (window.demoController) {
+                  window.demoController.autonomousConnectionDemo();
+                }
+              }, 1500);
+            }}
+            className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-green-600/20 to-emerald-600/20 hover:from-green-600/30 hover:to-emerald-600/30 rounded-xl border border-green-500/30 hover:border-green-500/50 transition-all group"
+            title="Run Autonomous Connection Demo"
+          >
+            <svg className="w-4 h-4 text-green-400 group-hover:text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <span className="text-xs font-semibold text-green-400 group-hover:text-green-300">Auto Demo</span>
+          </button>
+          
           <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-800/50 rounded-xl border border-slate-700">
             <span className="text-xs text-slate-400">Prod Mode</span>
             <button 
