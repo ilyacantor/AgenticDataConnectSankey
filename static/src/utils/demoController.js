@@ -2,6 +2,7 @@ class DemoController {
   constructor() {
     this.cursorPosition = { x: 0, y: 0 };
     this.annotationText = '';
+    this.slackAlert = null;
     this.isRunning = false;
     this.currentScene = 0;
     this.listeners = [];
@@ -18,6 +19,7 @@ class DemoController {
     this.listeners.forEach(listener => listener({
       cursorPosition: this.cursorPosition,
       annotationText: this.annotationText,
+      slackAlert: this.slackAlert,
       isRunning: this.isRunning
     }));
   }
@@ -125,6 +127,16 @@ class DemoController {
 
   hideAnnotation() {
     this.annotationText = '';
+    this.notify();
+  }
+
+  showSlackAlert(message) {
+    this.slackAlert = message;
+    this.notify();
+  }
+
+  hideSlackAlert() {
+    this.slackAlert = null;
     this.notify();
   }
 
@@ -303,8 +315,44 @@ class DemoController {
   }
 
   async engineerScene3() {
+    await this.wait(2000);
+    
+    // Simulate failure - find the first connection in the table and change it to failed
+    const firstConnectionRow = document.querySelector('table tbody tr');
+    if (firstConnectionRow) {
+      const statusBadge = firstConnectionRow.querySelector('.bg-green-500\\/10');
+      if (statusBadge) {
+        statusBadge.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-500 border border-red-500/20';
+        statusBadge.textContent = 'Failed';
+      }
+    }
+    
+    await this.wait(1000);
+
+    // Show Slack alert
+    this.showSlackAlert('🚨 Alert: Salesforce data sync failed.');
     this.showAnnotation('When a sync fails, the right people are proactively alerted. No more discovering broken dashboards hours later.');
     await this.wait(3000);
+
+    // Hide Slack alert
+    this.hideSlackAlert();
+    
+    // Click on the failed connection
+    if (firstConnectionRow) {
+      await this.click(firstConnectionRow);
+      await this.wait(1000);
+    }
+
+    // Wait for logs page to load and highlight error
+    await this.wait(1000);
+    const logLines = document.querySelectorAll('#sankey-container ~ div div.text-slate-300');
+    if (logLines.length > 0) {
+      // Highlight a specific error line
+      const errorLine = Array.from(logLines).find(line => line.textContent.includes('Authentication'));
+      if (errorLine) {
+        errorLine.className = 'text-red-500 font-semibold py-0.5 px-2 -mx-2 bg-red-500/10 rounded';
+      }
+    }
 
     this.showAnnotation('Engineers can drill down into detailed logs directly in the UI to diagnose and resolve the issue fast, minimizing data downtime.');
     await this.wait(4000);

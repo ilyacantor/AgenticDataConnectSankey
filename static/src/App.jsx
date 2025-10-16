@@ -4,7 +4,8 @@ function AppContent(){
   const [demoState, setDemoState] = React.useState({
     cursorPosition: { x: 0, y: 0 },
     annotationText: '',
-    isRunning: false
+    isRunning: false,
+    slackAlert: null
   });
 
   React.useEffect(()=>{
@@ -91,6 +92,7 @@ function AppContent(){
         <>
           <DemoCursor position={demoState.cursorPosition} visible={true} />
           <DemoAnnotation text={demoState.annotationText} visible={!!demoState.annotationText} />
+          <SlackAlert message={demoState.slackAlert} visible={!!demoState.slackAlert} />
         </>
       )}
     </div>
