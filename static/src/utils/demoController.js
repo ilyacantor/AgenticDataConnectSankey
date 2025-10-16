@@ -577,106 +577,88 @@ class DemoController {
 
   async businessScene1() {
     this.showAnnotation('A Marketing Ops Manager needs to connect their team\'s tools. The DCL provides a simple, self-service catalog of common applications.');
-    await this.wait(2000);
+    await this.wait(3000);
 
-    try {
-      // Click Add New Connection
-      const addButton = await this.waitForElement(() => 
-        Array.from(document.querySelectorAll('button')).find(btn => 
-          btn.textContent.includes('Add New Connection')
-        )
-      );
-      await this.click(addButton);
-      await this.wait(500);
+    // Show app catalog overlay
+    const catalogHTML = `
+      <div class="fixed inset-0 z-[9999] bg-slate-900/95 flex items-center justify-center animate-fade-in">
+        <div class="bg-slate-800 rounded-xl p-8 max-w-3xl w-full border border-slate-700">
+          <h2 class="text-2xl font-bold text-white mb-6">Connect an Application</h2>
+          <div class="grid grid-cols-3 gap-6">
+            <button data-demo-app="hubspot" class="flex flex-col items-center gap-3 p-6 bg-slate-700/50 hover:bg-slate-700 rounded-lg border border-slate-600 hover:border-orange-500 transition-all group">
+              <div class="w-16 h-16 bg-orange-500 rounded-lg flex items-center justify-center text-2xl font-bold text-white">H</div>
+              <span class="text-white font-medium">HubSpot</span>
+            </button>
+            <button class="flex flex-col items-center gap-3 p-6 bg-slate-700/50 hover:bg-slate-700 rounded-lg border border-slate-600 transition-all opacity-50">
+              <div class="w-16 h-16 bg-blue-500 rounded-lg flex items-center justify-center text-2xl font-bold text-white">S</div>
+              <span class="text-white font-medium">Salesforce</span>
+            </button>
+            <button class="flex flex-col items-center gap-3 p-6 bg-slate-700/50 hover:bg-slate-700 rounded-lg border border-slate-600 transition-all opacity-50">
+              <div class="w-16 h-16 bg-purple-500 rounded-lg flex items-center justify-center text-2xl font-bold text-white">S</div>
+              <span class="text-white font-medium">Stripe</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', catalogHTML);
+    await this.wait(1000);
 
-      // Type connection name
-      const nameInput = await this.waitForElement('input[placeholder*="Production"]');
-      await this.click(nameInput);
-      await this.type(nameInput, 'HubSpot Marketing');
-      await this.wait(500);
-
-      // Click Next
-      const nextButton = await this.waitForElement(() =>
-        Array.from(document.querySelectorAll('button')).find(btn => 
-          btn.textContent.includes('Next')
-        )
-      );
-      await this.click(nextButton);
-      await this.wait(500);
-      
-    } catch (error) {
-      console.error('Business Scene 1 failed:', error);
-    }
+    // Click HubSpot
+    const hubspotBtn = await this.waitForElement('[data-demo-app="hubspot"]');
+    await this.click(hubspotBtn);
+    await this.wait(500);
   }
 
   async businessScene2() {
     this.showAnnotation('Connecting is as simple as logging in with your HubSpot account. No need to manage API keys or file an IT ticket.');
-    await this.wait(1000);
-
-    try {
-      // Find inputs and auto-fill with HubSpot-like credentials
-      const inputs = await this.waitForElement(() => {
-        const modal = document.querySelector('.fixed.inset-0');
-        if (modal) {
-          const textInputs = Array.from(modal.querySelectorAll('input[type="text"]'));
-          const passwordInput = modal.querySelector('input[type="password"]');
-          if (textInputs.length >= 3 && passwordInput) {
-            return { host: textInputs[0], db: textInputs[1], user: textInputs[2], password: passwordInput };
-          }
-        }
-        return null;
-      });
-
-      await this.click(inputs.host);
-      await this.type(inputs.host, 'api.hubspot.com');
-      await this.wait(300);
-
-      await this.click(inputs.db);
-      await this.type(inputs.db, 'hubspot_marketing');
-      await this.wait(300);
-
-      await this.click(inputs.user);
-      await this.type(inputs.user, 'marketing_team');
-      await this.wait(300);
-
-      await this.click(inputs.password);
-      await this.type(inputs.password, 'oauth_token_123');
-      await this.wait(500);
-
-      // Click Test Connection
-      const testButton = await this.waitForElement(() =>
-        Array.from(document.querySelectorAll('button')).find(btn => 
-          btn.textContent.includes('Test Connection')
-        )
-      );
-      await this.click(testButton);
+    
+    // Replace catalog with OAuth flow
+    const catalog = document.querySelector('.fixed.inset-0.z-\\[9999\\]');
+    if (catalog) {
+      catalog.innerHTML = `
+        <div class="flex items-center justify-center h-full">
+          <div class="bg-slate-800 rounded-xl p-8 max-w-md w-full border border-slate-700 text-center">
+            <div class="mb-4">
+              <div class="w-16 h-16 bg-orange-500 rounded-full mx-auto flex items-center justify-center mb-4">
+                <svg class="w-8 h-8 text-white animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold text-white">Connecting to HubSpot...</h3>
+            </div>
+          </div>
+        </div>
+      `;
       await this.wait(2000);
 
-    } catch (error) {
-      console.error('Business Scene 2 failed:', error);
+      catalog.innerHTML = `
+        <div class="flex items-center justify-center h-full">
+          <div class="bg-slate-800 rounded-xl p-8 max-w-md w-full border border-slate-700 text-center">
+            <div class="mb-4">
+              <div class="w-16 h-16 bg-green-500 rounded-full mx-auto flex items-center justify-center mb-4">
+                <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold text-white">Successfully connected HubSpot!</h3>
+            </div>
+          </div>
+        </div>
+      `;
+      await this.wait(2000);
+      catalog.remove();
     }
+    
+    this.hideAnnotation();
   }
 
   async businessScene3() {
     this.showAnnotation('Business users can trigger a manual refresh after important events, like a campaign launch, to get the freshest data into their reports.');
-    await this.wait(1000);
-
-    try {
-      // Click Save Connection
-      const saveButton = await this.waitForElement(() =>
-        Array.from(document.querySelectorAll('button')).find(btn => 
-          btn.textContent.includes('Save Connection')
-        )
-      );
-      await this.click(saveButton);
-      await this.wait(2000);
-
-      this.showAnnotation('HubSpot is now connected! Marketing data flows automatically into your reports.');
-      await this.wait(3000);
-      
-    } catch (error) {
-      console.error('Business Scene 3 failed:', error);
-    }
+    await this.wait(3000);
+    this.hideAnnotation();
   }
 }
 
