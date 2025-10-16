@@ -434,24 +434,13 @@ class DemoController {
   }
 
   async engineerScene4() {
-    // Hide previous elements
-    this.hideAnnotation();
-    await this.wait(500);
-
-    // Show title card
-    this.showTitleCard('This is the true power of the autonomOS DCL intelligent platform');
+    // Start with annotation
+    this.showAnnotation('Following a company acquisition, IT integrates a new CRM. autonomOS doesn\'t need to be told; it senses the change in the enterprise landscape.');
     await this.wait(3000);
-    this.hideTitleCard();
-    await this.wait(500);
-
-    // Navigate to connections page if not already there
-    window.location.hash = '#/connections';
-    await this.wait(1000);
 
     // Show system notification
     this.showSystemNotification('New "HubSpot" application provisioned in the enterprise service catalog.');
-    this.showAnnotation('Following a company acquisition, IT integrates a new CRM. autonomOS doesn\'t need to be told; it senses the change in the enterprise landscape.');
-    await this.wait(4000);
+    await this.wait(3000);
 
     this.hideSystemNotification();
     this.hideAnnotation();
@@ -460,6 +449,36 @@ class DemoController {
     // Navigate to dashboard to show graph
     window.location.hash = '#/dashboard';
     await this.wait(1500);
+
+    // Check HubSpot in data sources
+    const hubspotCheckbox = await this.waitForElement(() => {
+      const labels = Array.from(document.querySelectorAll('label'));
+      const hubspotLabel = labels.find(l => l.textContent.includes('HubSpot'));
+      if (hubspotLabel) {
+        return hubspotLabel.querySelector('input[type="checkbox"]');
+      }
+      return null;
+    });
+    
+    if (hubspotCheckbox && !hubspotCheckbox.checked) {
+      await this.click(hubspotCheckbox);
+      await this.wait(500);
+    }
+
+    // Check RevOps agent
+    const revopsCheckbox = await this.waitForElement(() => {
+      const labels = Array.from(document.querySelectorAll('label'));
+      const revopsLabel = labels.find(l => l.textContent.includes('RevOps'));
+      if (revopsLabel) {
+        return revopsLabel.querySelector('input[type="checkbox"]');
+      }
+      return null;
+    });
+    
+    if (revopsCheckbox && !revopsCheckbox.checked) {
+      await this.click(revopsCheckbox);
+      await this.wait(1000);
+    }
 
     // Show AI thinking animation
     const thinkingLines = [
@@ -473,13 +492,19 @@ class DemoController {
       '> Mapping fields: close_date → expected_close_date',
       '> Mapping fields: company_name → account_name',
       '> Confidence score: 94.2%',
-      '> Creating connection to FinOps Agent...',
+      '> Creating connection to RevOps Agent...',
       '> ✓ Connection established'
     ];
     
     this.showAIThinking(thinkingLines);
     await this.wait(5000);
     this.hideAIThinking();
+    await this.wait(1000);
+
+    // Graph should now show the connection animated
+    this.showAnnotation('The DCL automatically maps HubSpot data to the unified ontology and connects it to the RevOps Agent.');
+    await this.wait(3000);
+    this.hideAnnotation();
     await this.wait(500);
 
     // Show FinOps Agent Dashboard
