@@ -5,7 +5,11 @@ function AppContent(){
     cursorPosition: { x: 0, y: 0 },
     annotationText: '',
     isRunning: false,
-    slackAlert: null
+    slackAlert: null,
+    titleCard: null,
+    systemNotification: null,
+    aiThinking: { visible: false, lines: [] },
+    finOpsDashboard: { visible: false, showHubSpot: false, totalRevenue: '245M' }
   });
 
   React.useEffect(()=>{
@@ -93,6 +97,14 @@ function AppContent(){
           <DemoCursor position={demoState.cursorPosition} visible={true} />
           <DemoAnnotation text={demoState.annotationText} visible={!!demoState.annotationText} />
           <SlackAlert message={demoState.slackAlert} visible={!!demoState.slackAlert} />
+          <TitleCard text={demoState.titleCard} visible={!!demoState.titleCard} />
+          <SystemNotification message={demoState.systemNotification} visible={!!demoState.systemNotification} />
+          <AIThinking lines={demoState.aiThinking.lines} visible={demoState.aiThinking.visible} />
+          <FinOpsAgentDashboard 
+            visible={demoState.finOpsDashboard.visible} 
+            showHubSpot={demoState.finOpsDashboard.showHubSpot}
+            totalRevenue={demoState.finOpsDashboard.totalRevenue}
+          />
         </>
       )}
     </div>

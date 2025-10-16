@@ -3,6 +3,10 @@ class DemoController {
     this.cursorPosition = { x: 0, y: 0 };
     this.annotationText = '';
     this.slackAlert = null;
+    this.titleCard = null;
+    this.systemNotification = null;
+    this.aiThinking = { visible: false, lines: [] };
+    this.finOpsDashboard = { visible: false, showHubSpot: false, totalRevenue: '245M' };
     this.isRunning = false;
     this.currentScene = 0;
     this.listeners = [];
@@ -20,6 +24,10 @@ class DemoController {
       cursorPosition: this.cursorPosition,
       annotationText: this.annotationText,
       slackAlert: this.slackAlert,
+      titleCard: this.titleCard,
+      systemNotification: this.systemNotification,
+      aiThinking: this.aiThinking,
+      finOpsDashboard: this.finOpsDashboard,
       isRunning: this.isRunning
     }));
   }
@@ -140,6 +148,50 @@ class DemoController {
     this.notify();
   }
 
+  showTitleCard(text) {
+    this.titleCard = text;
+    this.notify();
+  }
+
+  hideTitleCard() {
+    this.titleCard = null;
+    this.notify();
+  }
+
+  showSystemNotification(message) {
+    this.systemNotification = message;
+    this.notify();
+  }
+
+  hideSystemNotification() {
+    this.systemNotification = null;
+    this.notify();
+  }
+
+  showAIThinking(lines) {
+    this.aiThinking = { visible: true, lines };
+    this.notify();
+  }
+
+  hideAIThinking() {
+    this.aiThinking = { visible: false, lines: [] };
+    this.notify();
+  }
+
+  showFinOpsDashboard(options = {}) {
+    this.finOpsDashboard = {
+      visible: true,
+      showHubSpot: options.showHubSpot || false,
+      totalRevenue: options.totalRevenue || '245M'
+    };
+    this.notify();
+  }
+
+  hideFinOpsDashboard() {
+    this.finOpsDashboard = { visible: false, showHubSpot: false, totalRevenue: '245M' };
+    this.notify();
+  }
+
   wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -185,11 +237,16 @@ class DemoController {
       await this.engineerScene1();
       await this.engineerScene2();
       await this.engineerScene3();
+      await this.engineerScene4();
     } catch (error) {
       console.error('Demo error:', error);
     } finally {
       this.isRunning = false;
       this.hideAnnotation();
+      this.hideTitleCard();
+      this.hideSystemNotification();
+      this.hideAIThinking();
+      this.hideFinOpsDashboard();
       this.notify();
       
       // Return to demo home after completion
@@ -356,6 +413,69 @@ class DemoController {
 
     this.showAnnotation('Engineers can drill down into detailed logs directly in the UI to diagnose and resolve the issue fast, minimizing data downtime.');
     await this.wait(4000);
+  }
+
+  async engineerScene4() {
+    // Hide previous elements
+    this.hideAnnotation();
+    await this.wait(500);
+
+    // Show title card
+    this.showTitleCard('But the true power is full autonomy...');
+    await this.wait(3000);
+    this.hideTitleCard();
+    await this.wait(500);
+
+    // Navigate to connections page if not already there
+    window.location.hash = '#/connections';
+    await this.wait(1000);
+
+    // Show system notification
+    this.showSystemNotification('New "HubSpot" application provisioned in the enterprise service catalog.');
+    this.showAnnotation('Following a company acquisition, IT integrates a new CRM. autonomOS doesn\'t need to be told; it senses the change in the enterprise landscape.');
+    await this.wait(4000);
+
+    this.hideSystemNotification();
+    this.hideAnnotation();
+    await this.wait(500);
+
+    // Navigate to dashboard to show graph
+    window.location.hash = '#/dashboard';
+    await this.wait(1500);
+
+    // Show AI thinking animation
+    const thinkingLines = [
+      '> Scanning enterprise service catalog...',
+      '> New data source detected: HubSpot CRM',
+      '> Analyzing HubSpot schema objects...',
+      '> Found: Contacts, Deals, Companies, Activities',
+      '> Semantic match: HubSpot.Deals → UnifiedOntology.RevenueOpportunity',
+      '> Semantic match: HubSpot.Companies → UnifiedOntology.Account',
+      '> Mapping fields: deal_value → revenue_forecast',
+      '> Mapping fields: close_date → expected_close_date',
+      '> Mapping fields: company_name → account_name',
+      '> Confidence score: 94.2%',
+      '> Creating connection to FinOps Agent...',
+      '> ✓ Connection established'
+    ];
+    
+    this.showAIThinking(thinkingLines);
+    await this.wait(5000);
+    this.hideAIThinking();
+    await this.wait(500);
+
+    // Show FinOps Agent Dashboard
+    this.showFinOpsDashboard({ showHubSpot: false, totalRevenue: '165M' });
+    await this.wait(2000);
+
+    // Animate HubSpot bar appearing and update total
+    this.showFinOpsDashboard({ showHubSpot: true, totalRevenue: '245M' });
+    
+    this.showAnnotation('autonomOS didn\'t just connect the data; it understood it and made it immediately useful to the business. Time from system integration to business insight: minutes, not months.');
+    await this.wait(5000);
+
+    this.hideAnnotation();
+    this.hideFinOpsDashboard();
   }
 
   async businessScene1() {
