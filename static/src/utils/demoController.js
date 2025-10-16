@@ -492,6 +492,89 @@ class DemoController {
     this.hideFinOpsDashboard();
   }
 
+  async autonomousConnectionDemo() {
+    // We're already on the dashboard
+    await this.wait(1000);
+
+    // Close hook modal if it exists
+    const closeModalBtn = document.querySelector('[role="dialog"] button');
+    if (closeModalBtn) {
+      await this.click(closeModalBtn);
+      await this.wait(500);
+    }
+
+    // Show M&A event annotation
+    this.showAnnotation('Following a company acquisition, IT integrates a new CRM into the enterprise catalog.');
+    await this.wait(3000);
+
+    // System notification about HubSpot
+    this.showSystemNotification('New "HubSpot" application provisioned in the enterprise service catalog.');
+    await this.wait(3000);
+    
+    this.hideSystemNotification();
+    this.hideAnnotation();
+    await this.wait(500);
+
+    // Dynamically add HubSpot to the data sources list in the UI
+    const sourcesContainer = document.querySelector('[data-demo-ready="sources"]');
+    if (sourcesContainer) {
+      // Create HubSpot checkbox HTML
+      const hubspotHTML = `
+        <label data-demo-source="hubspot" class="flex items-center gap-2 p-2 rounded-lg border cursor-pointer group transition-colors bg-blue-900/30 border-blue-700/50 text-blue-300 animate-fade-in">
+          <input type="checkbox" class="w-4 h-4 rounded border-slate-600 bg-slate-800 text-cyan-500 focus:ring-cyan-500" />
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <span class="text-sm text-slate-200 group-hover:text-white flex-1">HubSpot</span>
+          <span class="text-[10px] text-slate-400 uppercase font-semibold">crm</span>
+        </label>
+      `;
+      sourcesContainer.insertAdjacentHTML('beforeend', hubspotHTML);
+      await this.wait(1000);
+    }
+
+    this.showAnnotation('autonomOS detected the new system and automatically added it to available data sources.');
+    await this.wait(2500);
+    this.hideAnnotation();
+    await this.wait(500);
+
+    // Check HubSpot checkbox
+    const hubspotLabel = await this.waitForElement('[data-demo-source="hubspot"]');
+    const hubspotCheckbox = hubspotLabel.querySelector('input[type="checkbox"]');
+    if (hubspotCheckbox && !hubspotCheckbox.checked) {
+      await this.click(hubspotCheckbox);
+      await this.wait(500);
+    }
+
+    // Check RevOps checkbox
+    const revopsLabel = await this.waitForElement('[data-demo-agent="revops_pilot"]');
+    const revopsCheckbox = revopsLabel.querySelector('input[type="checkbox"]');
+    if (revopsCheckbox && !revopsCheckbox.checked) {
+      await this.click(revopsCheckbox);
+      await this.wait(500);
+    }
+
+    this.showAnnotation('autonomOS selects the appropriate data source and target agent for integration.');
+    await this.wait(2500);
+    this.hideAnnotation();
+    await this.wait(500);
+
+    // Click Connect & Map button
+    const connectButton = await this.waitForElement(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      return buttons.find(btn => btn.textContent.includes('Connect & Map'));
+    });
+    
+    if (connectButton) {
+      await this.click(connectButton);
+      await this.wait(1000);
+    }
+
+    this.showAnnotation('The autonomous connection and mapping process begins...');
+    await this.wait(3000);
+    this.hideAnnotation();
+  }
+
   async businessScene1() {
     this.showAnnotation('A Marketing Ops Manager needs to connect their team\'s tools. The DCL provides a simple, self-service catalog of common applications.');
     await this.wait(2000);
