@@ -62,9 +62,23 @@ The DCL features a Prod Mode toggle that controls how data mappings are validate
 - **Autoscale Deployment Optimization**: Optimized for Autoscale deployment with efficient dependency installation (e.g., CPU-only PyTorch) and streamlined build commands.
 - **Environment Variables**: `GEMINI_API_KEY`, `PINECONE_API_KEY`, and `GITHUB_TOKEN` are used for configuration and secure access.
 
+## Authentication & Security (Phase 1 - MVP)
+- **Authentication Provider**: Supabase Auth for email/password authentication
+- **Authorization**: Role-based access control (RBAC) with two roles:
+  - `admin`: Full access including Command Center and user management
+  - `viewer`: Read-only access to dashboards and data views
+- **Protected Routes**: All routes except `/login` require authentication
+- **Session Management**: Automatic session handling with Supabase client
+- **Security Features**:
+  - Row Level Security (RLS) on user_profiles table
+  - Secure password handling via Supabase Auth
+  - JWT-based session tokens
+  - Automatic user profile creation on signup
+
 ## External Dependencies
 - **AI Provider**: Google Gemini API (`gemini-2.5-pro`) for AI-powered schema inference.
 - **Vector Database**: Pinecone Inference API (for embeddings using `multilingual-e5-large`) and Pinecone Serverless (for vector storage, index "schema-mappings-e5" in `us-east-1`).
 - **Database**: DuckDB for creating and managing data views.
+- **Authentication**: Supabase for user authentication and role management.
 - **Visualization Libraries**: Cytoscape.js for graph visualization.
 - **Data Sources**: Integration with enterprise systems like Dynamics, Salesforce, SAP, NetSuite, Snowflake, Supabase, MongoDB, and Legacy SQL databases.

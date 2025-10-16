@@ -1,0 +1,54 @@
+Prompt 1: Setup User Authentication & RBAC
+"Using Supabase for authentication, create the user management foundation for this application.
+
+Initialize the Supabase client.
+
+Create a user login page that uses Supabase's email/password authentication.
+
+Modify the user profile table in Supabase to include a role column, which can be either admin or viewer.
+
+Implement protected routes. The main dashboard should only be accessible to logged-in users. Unauthenticated users should be redirected to the login page."
+
+Prompt 2: Build the Central Connection Dashboard UI
+"Create a new React component to serve as the main dashboard. This will be the new homepage for authenticated users.
+
+The dashboard should have the title 'Data Connections'.
+
+Below the title, add a prominent button styled as a primary action with the text '+ Add New Connection'.
+
+The main feature is a table that will list the connections. Use mock data for now. The table columns should be: Connection Name, Type (e.g., 'PostgreSQL', 'Salesforce'), Status (e.g., 'Connected', 'Failed'), and Last Refreshed.
+
+The 'Status' column should use colored badges: green for 'Connected' and red for 'Failed'."
+
+Prompt 3: Create the User Invitation System
+"Create an 'Admin' page that is only visible to users with the admin role.
+
+On this page, create a form titled 'Invite New User'.
+
+The form should have two fields: an email input for 'User Email' and a dropdown to select a 'Role' ('admin' or 'viewer').
+
+Create an Express.js API endpoint /api/invite. When the form is submitted, this endpoint should use the Supabase admin client to send a magic link invitation to the specified email address, pre-assigning the selected role to the new user."
+
+Prompt 4: Build the Postgres Connector Wizard
+"Create the UI and backend logic for a multi-step wizard to add a new PostgreSQL database connection. This should be triggered by the '+ Add New Connection' button.
+
+UI (React): Create a modal form wizard. Step 1 asks for 'Connection Name'. Step 2 presents a form with fields for 'Host', 'Port', 'Database Name', 'User', and 'Password'.
+
+Backend (Express.js):
+
+Create an API endpoint /api/connections/test that receives the connection details, attempts to connect to the Postgres database, and returns a success or failure message.
+
+Create a connections table in Supabase.
+
+When the user saves, securely encrypt the password using a master key from Replit Secrets and save the connection details to the connections table. Never store passwords in plain text."
+
+Prompt 5: Create a Basic Logging Page
+"Create a new page for viewing connection details and logs.
+
+Make each row in the dashboard connections table clickable. Clicking a row should navigate the user to a new route like /connections/[connection_id].
+
+The new page should display the connection's name and type at the top.
+
+Below that, add a simple log viewer. This should look like a terminal window with a dark background.
+
+Create an API endpoint /api/connections/[connection_id]/logs that retrieves and displays mock log data for now (e.g., 'Connection successful at [timestamp]', 'Fetched 10,000 rows')."

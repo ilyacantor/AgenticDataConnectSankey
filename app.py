@@ -1212,6 +1212,20 @@ def rag_stats():
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
 
+@app.get("/api/supabase-config")
+def supabase_config():
+    """Provide Supabase configuration to frontend (only public keys)."""
+    supabase_url = os.getenv("SUPABASE_URL", "")
+    supabase_anon_key = os.getenv("SUPABASE_ANON_KEY", "")
+    
+    if not supabase_url or not supabase_anon_key:
+        return JSONResponse({"error": "Supabase not configured"}, status_code=500)
+    
+    return JSONResponse({
+        "url": supabase_url,
+        "anonKey": supabase_anon_key
+    })
+
 @app.post("/api/infer")
 async def infer_schema(request: Dict[str, Any]):
     fields = request.get("fields", [])

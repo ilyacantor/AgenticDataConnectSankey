@@ -49,15 +49,24 @@
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <!-- Sankey visualization script -->
     <script src="/static/sankey.js"></script>
 
+    <!-- Supabase initialization -->
+    <script src="/static/src/supabaseClient.js"></script>
+
     <!-- App files -->
     <script type="text/babel" src="/static/src/router.js"></script>
+    <script type="text/babel" src="/static/src/AuthContext.jsx"></script>
+    <script type="text/babel" src="/static/src/components/ProtectedRoute.jsx"></script>
     <script type="text/babel" src="/static/src/components/NavBar.jsx"></script>
     <script type="text/babel" src="/static/src/components/SideNav.jsx"></script>
     <script type="text/babel" src="/static/src/components/StatusPill.jsx"></script>
+    <script type="text/babel" src="/static/src/pages/Login.jsx"></script>
     <script type="text/babel" src="/static/src/pages/DCLDashboard.jsx"></script>
     <script type="text/babel" src="/static/src/pages/OntologyMapping.jsx"></script>
     <script type="text/babel" src="/static/src/pages/UncertainUnifications.jsx"></script>
