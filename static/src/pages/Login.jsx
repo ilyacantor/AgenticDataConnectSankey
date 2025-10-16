@@ -157,15 +157,69 @@ function Login() {
           <div className="card mt-6 border-yellow-600/30 bg-yellow-900/10">
             <h3 className="text-lg font-semibold text-yellow-500 mb-3">Database Setup Required</h3>
             <p className="text-slate-400 text-sm mb-4">
-              The authentication database needs to be set up. Follow the simple setup guide.
+              The authentication database needs to be set up. Follow these simple steps:
             </p>
-            <a
-              href="/database-setup.html"
-              target="_blank"
-              className="block w-full py-2.5 px-4 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-colors text-center"
-            >
-              🔧 Open Setup Guide
-            </a>
+            <ol className="text-slate-400 text-sm mb-4 space-y-2 list-decimal list-inside">
+              <li>Go to <a href="https://supabase.com/dashboard" target="_blank" className="text-cyan-500 hover:underline">Supabase Dashboard</a> → SQL Editor</li>
+              <li>Click "New query" and paste the SQL code from below</li>
+              <li>Click "Run" to create the tables</li>
+              <li>Come back here and try signing up again</li>
+            </ol>
+            <div className="relative">
+              <button
+                onClick={() => {
+                  const sql = document.getElementById('setupSQL').textContent;
+                  navigator.clipboard.writeText(sql);
+                  alert('✅ SQL code copied! Now paste it into Supabase SQL Editor and click Run.');
+                }}
+                className="w-full py-2.5 px-4 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-colors mb-3"
+              >
+                📋 Copy SQL Code
+              </button>
+              <div id="setupSQL" className="hidden">
+CREATE TABLE IF NOT EXISTS public.user_profiles (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE NOT NULL,
+  role TEXT NOT NULL CHECK (role IN ('admin', 'viewer')) DEFAULT 'viewer',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own profile" 
+  ON public.user_profiles FOR SELECT 
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own profile" 
+  ON public.user_profiles FOR INSERT 
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own profile" 
+  ON public.user_profiles FOR UPDATE 
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.user_profiles (user_id, role)
+  VALUES (NEW.id, 'viewer');
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+CREATE INDEX IF NOT EXISTS idx_user_profiles_user_id ON public.user_profiles(user_id);
+
+GRANT USAGE ON SCHEMA public TO anon, authenticated;
+GRANT SELECT, INSERT, UPDATE ON public.user_profiles TO authenticated;
+              </div>
+            </div>
           </div>
         )}
       </div>
