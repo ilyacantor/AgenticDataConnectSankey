@@ -4,6 +4,8 @@ function Login() {
   const [error, setError] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [isSignUp, setIsSignUp] = React.useState(false);
+  const [showSetup, setShowSetup] = React.useState(false);
+  const [setupInProgress, setSetupInProgress] = React.useState(false);
   const { signIn, signUp } = useAuth();
 
   const handleSubmit = async (e) => {
@@ -15,7 +17,13 @@ function Login() {
       if (isSignUp) {
         const { error } = await signUp(email, password);
         if (error) {
-          setError(error.message || 'Failed to sign up');
+          // Check if it's a table not found error
+          if (error.message && error.message.includes('user_profiles')) {
+            setShowSetup(true);
+            setError('Database not set up. Click "Setup Database" button below.');
+          } else {
+            setError(error.message || 'Failed to sign up');
+          }
         } else {
           window.location.hash = '#/dcl';
         }
@@ -31,6 +39,34 @@ function Login() {
       setError('An unexpected error occurred');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSetupDatabase = async () => {
+    setSetupInProgress(true);
+    setError('');
+    
+    try {
+      const response = await fetch('/api/setup-database', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setShowSetup(false);
+        alert('✅ ' + data.message);
+      } else {
+        setError(data.error || 'Setup failed');
+        if (data.suggestion) {
+          setError(data.error + '\n\n' + data.suggestion);
+        }
+      }
+    } catch (err) {
+      setError('Failed to setup database: ' + err.message);
+    } finally {
+      setSetupInProgress(false);
     }
   };
 
@@ -111,6 +147,22 @@ function Login() {
           <p className="text-center text-sm text-slate-500 mt-6">
             First time here? Click "Sign up" to create an account
           </p>
+        )}
+
+        {showSetup && (
+          <div className="card mt-6 border-yellow-600/30 bg-yellow-900/10">
+            <h3 className="text-lg font-semibold text-yellow-500 mb-3">Database Setup Required</h3>
+            <p className="text-slate-400 text-sm mb-4">
+              The authentication database needs to be set up. Follow the simple setup guide.
+            </p>
+            <a
+              href="/database-setup.html"
+              target="_blank"
+              className="block w-full py-2.5 px-4 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-colors text-center"
+            >
+              🔧 Open Setup Guide
+            </a>
+          </div>
         )}
       </div>
     </div>

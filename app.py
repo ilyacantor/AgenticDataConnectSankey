@@ -1290,6 +1290,120 @@ Fields:
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
+@app.post("/api/setup-database")
+async def setup_database():
+    """Automatically create Supabase user_profiles table and policies"""
+    import requests
+    
+    supabase_url = os.getenv("SUPABASE_URL")
+    supabase_key = os.getenv("SUPABASE_SERVICE_KEY")  # Service key for admin operations
+    
+    if not supabase_url or not supabase_key:
+        return JSONResponse(
+            content={"error": "SUPABASE_URL and SUPABASE_SERVICE_KEY environment variables are required"},
+            status_code=500
+        )
+    
+    # SQL to create the complete setup
+    setup_sql = """
+-- Create user_profiles table
+CREATE TABLE IF NOT EXISTS public.user_profiles (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE NOT NULL,
+  role TEXT NOT NULL CHECK (role IN ('admin', 'viewer')) DEFAULT 'viewer',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable Row Level Security
+ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Users can view own profile" ON public.user_profiles;
+DROP POLICY IF EXISTS "Users can insert own profile" ON public.user_profiles;
+DROP POLICY IF EXISTS "Users can update own profile" ON public.user_profiles;
+
+-- Create policies
+CREATE POLICY "Users can view own profile" 
+  ON public.user_profiles FOR SELECT 
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own profile" 
+  ON public.user_profiles FOR INSERT 
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own profile" 
+  ON public.user_profiles FOR UPDATE 
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+-- Create auto-profile function
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.user_profiles (user_id, role)
+  VALUES (NEW.id, 'viewer');
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Create trigger
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- Performance index
+CREATE INDEX IF NOT EXISTS idx_user_profiles_user_id ON public.user_profiles(user_id);
+
+-- Grant permissions
+GRANT USAGE ON SCHEMA public TO anon, authenticated;
+GRANT SELECT, INSERT, UPDATE ON public.user_profiles TO authenticated;
+"""
+    
+    try:
+        # Use Supabase REST API to execute SQL
+        headers = {
+            "apikey": supabase_key,
+            "Authorization": f"Bearer {supabase_key}",
+            "Content-Type": "application/json"
+        }
+        
+        response = requests.post(
+            f"{supabase_url}/rest/v1/rpc/exec",
+            headers=headers,
+            json={"query": setup_sql}
+        )
+        
+        # Alternative: Try direct SQL execution via PostgREST
+        if response.status_code >= 400:
+            # Try using the query endpoint
+            response = requests.post(
+                f"{supabase_url}/rest/v1/",
+                headers=headers,
+                data=setup_sql
+            )
+        
+        if response.status_code < 400:
+            return JSONResponse(content={
+                "success": True,
+                "message": "Database tables and policies created successfully! You can now sign up."
+            })
+        else:
+            return JSONResponse(
+                content={
+                    "error": f"Failed to create tables: {response.text}",
+                    "suggestion": "You may need to add SUPABASE_SERVICE_KEY to your secrets (find it in Supabase Settings > API)"
+                },
+                status_code=500
+            )
+            
+    except Exception as e:
+        return JSONResponse(
+            content={"error": str(e), "suggestion": "Check that SUPABASE_SERVICE_KEY is set correctly"},
+            status_code=500
+        )
+
 @app.get("/agentic-connection", response_class=HTMLResponse)
 def agentic_connection():
     with open("static/agentic-connection.html", "r", encoding="utf-8") as f:
