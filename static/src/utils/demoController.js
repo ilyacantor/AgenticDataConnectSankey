@@ -434,19 +434,9 @@ class DemoController {
   }
 
   async engineerScene4() {
-    // Wait for dashboard to fully load
-    await this.wait(2000);
-    
-    // Close hook modal if it exists
-    const closeModalBtn = document.querySelector('[role="dialog"] button');
-    if (closeModalBtn) {
-      await this.click(closeModalBtn);
-      await this.wait(500);
-    }
-    
-    // Start with annotation (we're already on dashboard)
+    // Start with annotation
     this.showAnnotation('Following a company acquisition, IT integrates a new CRM. autonomOS doesn\'t need to be told; it senses the change in the enterprise landscape.');
-    await this.wait(3000);
+    await this.wait(3500);
 
     // Show system notification
     this.showSystemNotification('New "HubSpot" application provisioned in the enterprise service catalog.');
@@ -454,25 +444,7 @@ class DemoController {
 
     this.hideSystemNotification();
     this.hideAnnotation();
-    await this.wait(1000);
-
-    // Check HubSpot in data sources using data attribute
-    const hubspotLabel = await this.waitForElement('[data-demo-source="hubspot"]');
-    const hubspotCheckbox = hubspotLabel.querySelector('input[type="checkbox"]');
-    
-    if (hubspotCheckbox && !hubspotCheckbox.checked) {
-      await this.click(hubspotCheckbox);
-      await this.wait(500);
-    }
-
-    // Check RevOps agent using data attribute
-    const revopsLabel = await this.waitForElement('[data-demo-agent="revops_pilot"]');
-    const revopsCheckbox = revopsLabel.querySelector('input[type="checkbox"]');
-    
-    if (revopsCheckbox && !revopsCheckbox.checked) {
-      await this.click(revopsCheckbox);
-      await this.wait(1000);
-    }
+    await this.wait(500);
 
     // Show AI thinking animation
     const thinkingLines = [
@@ -480,36 +452,39 @@ class DemoController {
       '> New data source detected: HubSpot CRM',
       '> Analyzing HubSpot schema objects...',
       '> Found: Contacts, Deals, Companies, Activities',
+      '> ',
       '> Semantic match: HubSpot.Deals → UnifiedOntology.RevenueOpportunity',
       '> Semantic match: HubSpot.Companies → UnifiedOntology.Account',
+      '> ',
       '> Mapping fields: deal_value → revenue_forecast',
       '> Mapping fields: close_date → expected_close_date',
       '> Mapping fields: company_name → account_name',
+      '> ',
       '> Confidence score: 94.2%',
       '> Creating connection to RevOps Agent...',
       '> ✓ Connection established',
+      '> ',
       '> Pushing data to unified ontology...',
       '> ✓ Data integration complete'
     ];
     
     this.showAIThinking(thinkingLines);
-    await this.wait(6000);
+    this.showAnnotation('autonomOS analyzes the new data source, intelligently maps it to the unified ontology, and connects it to the appropriate agents.');
+    await this.wait(7000);
     this.hideAIThinking();
-    await this.wait(500);
-
-    // Show annotation about automatic integration
-    this.showAnnotation('The DCL automatically mapped HubSpot data to the unified ontology and integrated it with the RevOps Agent - no human intervention required.');
-    await this.wait(3500);
     this.hideAnnotation();
-    await this.wait(500);
+    await this.wait(1000);
 
-    // Show FinOps Agent Dashboard
+    // Show FinOps Agent Dashboard with results
+    this.showAnnotation('The new HubSpot data is now instantly available to business intelligence agents.');
     this.showFinOpsDashboard({ showHubSpot: false, totalRevenue: '165M' });
     await this.wait(2000);
 
     // Animate HubSpot bar appearing and update total
     this.showFinOpsDashboard({ showHubSpot: true, totalRevenue: '245M' });
+    await this.wait(2000);
     
+    this.hideAnnotation();
     this.showAnnotation('autonomOS didn\'t just connect the data; it understood it and made it immediately useful to the business. Time from system integration to business insight: minutes, not months.');
     await this.wait(5000);
 
