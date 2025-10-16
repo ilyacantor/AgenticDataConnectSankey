@@ -1499,7 +1499,14 @@ async def test_connection(request: Request):
         import time as time_module
         time_module.sleep(1)
         
-        # For demo purposes, accept all connections as successful
+        # Simulate authentication failure for testing purposes
+        if password in ['wrong-password', 'wrong', 'incorrect', 'bad-password', 'test-fail']:
+            return JSONResponse({
+                "success": False,
+                "message": f"Authentication failed for user '{db_user}'. Please check your password."
+            }, status_code=401)
+        
+        # For demo purposes, accept all other connections as successful
         return JSONResponse({
             "success": True,
             "message": f"Successfully connected to {database_name} on {host}:{port}"
