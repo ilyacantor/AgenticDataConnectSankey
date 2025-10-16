@@ -271,6 +271,7 @@ function DCLDashboard(){
   const sources = [
     {name: 'Dynamics CRM', value: 'dynamics', type: 'crm'},
     {name: 'Salesforce', value: 'salesforce', type: 'crm'},
+    {name: 'HubSpot', value: 'hubspot', type: 'crm'},
     {name: 'SAP ERP', value: 'sap', type: 'erp'},
     {name: 'NetSuite', value: 'netsuite', type: 'erp'},
     {name: 'Legacy SQL', value: 'legacy_sql', type: 'database'},
