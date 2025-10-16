@@ -62,18 +62,26 @@ The DCL features a Prod Mode toggle that controls how data mappings are validate
 - **Autoscale Deployment Optimization**: Optimized for Autoscale deployment with efficient dependency installation (e.g., CPU-only PyTorch) and streamlined build commands.
 - **Environment Variables**: `GEMINI_API_KEY`, `PINECONE_API_KEY`, and `GITHUB_TOKEN` are used for configuration and secure access.
 
-## Authentication & Security (Phase 1 - MVP)
-- **Authentication Provider**: Supabase Auth for email/password authentication
+## Authentication & Security (Phase 1 - Production-Ready)
+- **Authentication Provider**: Supabase Auth (CDN integration) for email/password authentication
 - **Authorization**: Role-based access control (RBAC) with two roles:
   - `admin`: Full access including Command Center and user management
   - `viewer`: Read-only access to dashboards and data views
 - **Protected Routes**: All routes except `/login` require authentication
 - **Session Management**: Automatic session handling with Supabase client
+- **Production-Safe Role Handling**:
+  - Role persistence in localStorage prevents admin privilege loss during transient Supabase failures
+  - Retry logic (3 attempts with exponential backoff) handles profile creation delays
+  - Blocking error screens with retry buttons instead of silent downgrade to viewer
+  - Cached roles preserve admin access during network/database errors
+  - Clear error messages guide users to resolve issues
 - **Security Features**:
   - Row Level Security (RLS) on user_profiles table
   - Secure password handling via Supabase Auth
   - JWT-based session tokens
-  - Automatic user profile creation on signup
+  - Automatic user profile creation on signup via database trigger
+  - Proper error surfacing for configuration issues
+  - No silent role downgrades that could lock out admins
 
 ## External Dependencies
 - **AI Provider**: Google Gemini API (`gemini-2.5-pro`) for AI-powered schema inference.
