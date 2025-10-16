@@ -444,32 +444,24 @@ class DemoController {
 
     this.hideSystemNotification();
     this.hideAnnotation();
-    await this.wait(1000);
+    await this.wait(500);
 
-    // Check HubSpot in data sources
-    const hubspotCheckbox = await this.waitForElement(() => {
-      const labels = Array.from(document.querySelectorAll('label'));
-      const hubspotLabel = labels.find(l => l.textContent.includes('HubSpot'));
-      if (hubspotLabel) {
-        return hubspotLabel.querySelector('input[type="checkbox"]');
-      }
-      return null;
-    });
+    // Wait for dashboard to be fully ready (sources list rendered)
+    await this.waitForElement('[data-demo-ready="sources"]');
+    await this.wait(500);
+
+    // Check HubSpot in data sources using data attribute
+    const hubspotLabel = await this.waitForElement('[data-demo-source="hubspot"]');
+    const hubspotCheckbox = hubspotLabel.querySelector('input[type="checkbox"]');
     
     if (hubspotCheckbox && !hubspotCheckbox.checked) {
       await this.click(hubspotCheckbox);
       await this.wait(500);
     }
 
-    // Check RevOps agent
-    const revopsCheckbox = await this.waitForElement(() => {
-      const labels = Array.from(document.querySelectorAll('label'));
-      const revopsLabel = labels.find(l => l.textContent.includes('RevOps'));
-      if (revopsLabel) {
-        return revopsLabel.querySelector('input[type="checkbox"]');
-      }
-      return null;
-    });
+    // Check RevOps agent using data attribute
+    const revopsLabel = await this.waitForElement('[data-demo-agent="revops_pilot"]');
+    const revopsCheckbox = revopsLabel.querySelector('input[type="checkbox"]');
     
     if (revopsCheckbox && !revopsCheckbox.checked) {
       await this.click(revopsCheckbox);

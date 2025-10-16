@@ -344,7 +344,7 @@ function DCLDashboard(){
                     </button>
                   </div>
                 </div>
-            <div className="space-y-2 mb-3">
+            <div className="space-y-2 mb-3" data-demo-ready="sources">
               {sources.map(s => {
                 const getIcon = (type) => {
                   const iconClass = "w-5 h-5";
@@ -391,7 +391,7 @@ function DCLDashboard(){
                 };
                 
                 return (
-                  <label key={s.value} className={`flex items-center gap-2 p-2 rounded-lg border cursor-pointer group transition-colors ${typeColors[s.type] || 'bg-slate-900/30 border-slate-700/50'}`}>
+                  <label key={s.value} className={`flex items-center gap-2 p-2 rounded-lg border cursor-pointer group transition-colors ${typeColors[s.type] || 'bg-slate-900/30 border-slate-700/50'}`} data-demo-source={s.value}>
                     <input 
                       type="checkbox" 
                       checked={selectedSources.includes(s.value)}
@@ -411,7 +411,7 @@ function DCLDashboard(){
             <div className="card-title mb-3">Target Agents</div>
             <div className="space-y-2 mb-3">
               {agents.map(a => (
-                <label key={a.value} className="flex items-start gap-2 cursor-pointer group">
+                <label key={a.value} className="flex items-start gap-2 cursor-pointer group" data-demo-agent={a.value}>
                   <input 
                     type="checkbox" 
                     checked={selectedAgents.includes(a.value)}
