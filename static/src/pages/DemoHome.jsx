@@ -10,8 +10,7 @@ function DemoHome() {
   };
 
   const startAutonomyDemo = () => {
-    sessionStorage.setItem('demoMode', 'autonomy');
-    window.location.hash = '#/dashboard';
+    window.location.hash = '#/autonomy-demo';
   };
 
   return (

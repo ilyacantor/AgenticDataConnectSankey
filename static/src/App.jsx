@@ -84,6 +84,7 @@ function AppContent(){
     switch(path){
       case '/':
       case '/demo': Page = <DemoHome/>; break;
+      case '/autonomy-demo': Page = <AutonomyDemo onComplete={() => window.location.hash = '#/demo'} />; break;
       case '/dcl': Page = <ProtectedRoute><DCLDashboard/></ProtectedRoute>; break;
       case '/connections': Page = <ProtectedRoute><Connections/></ProtectedRoute>; break;
       case '/ontology': Page = <ProtectedRoute><OntologyMapping/></ProtectedRoute>; break;

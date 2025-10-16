@@ -1,0 +1,45 @@
+2. Show a system-notification banner sliding from the top:
+   Text: "System Event Detected: New 'HubSpot' application provisioned in the enterprise service catalog."
+   Subtitle (annotation): 
+   "Following a company acquisition, IT integrates a new CRM. autonomOS doesn't need to be told; it senses the change in the enterprise landscape."
+
+3. Transition view to the existing DCL Graph canvas.
+   - Programmatically create a new node labeled "HubSpot" (style: orange-accented, glowing outline).
+   - Trigger a short "AI thinking" animation overlay with rapid scrolling text:
+       "Analyzing HubSpot objects..."
+       "Semantic match: HubSpot.Deals → UnifiedOntology.RevenueOpportunity"
+       "Mapping fields..."
+   - After the animation, draw a new animated connection line from "HubSpot" → "FinOps Agent" node.
+
+4. Cut to a mock FinOps Agent Dashboard scene.
+   - Create a bar chart titled "Total Revenue Forecast by Source".
+   - Initially show two bars: Salesforce and Dynamics with existing heights.
+   - After 2s delay, animate a third bar labeled HubSpot growing into the chart.
+   - Simultaneously increment the total forecast number at the top.
+
+5. Display final annotation:
+   "autonomOS didn't just connect the data; it understood it and made it immediately useful to the business.  
+    Time from system integration to business insight: minutes, not months."
+
+6. End with fade-to-black and the autonomOS logo / tagline.
+
+# Implementation Hints
+- Keep everything inside the same canvas or overlay layers used by the DCL graph to avoid cross-context errors.
+- Use existing D3.js / GSAP or CSS animations already loaded in the DCL visual page.
+- Ensure functions:
+    startAutonomyFinale() – main entry
+    addHubSpotNode()
+    animateThinking()
+    connectToFinOps()
+    showRevenueChart()
+- Trigger startAutonomyFinale() automatically when the demo reaches its last troubleshooting event.
+
+# Success Criteria
+- The agent successfully accesses the DCL graph canvas.
+- All animations occur sequentially without page reloads.
+- Visual continuity maintained (dark background, cyan/orange accents).
+- Demo ends cleanly with the final annotation and fade out.
+
+# Output Expectations
+- Modified /demo/dclGraph.js and /demo/sceneFinale.js (or equivalent) with new functions.
+- Console summary of what was appended.
