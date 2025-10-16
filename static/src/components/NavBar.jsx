@@ -24,8 +24,8 @@ function NavBar({onSearch}){
   };
 
   const navItems = [
-    { href:'#/connections', label:'Connections' },
     { href:'#/dcl', label:'DCL' },
+    { href:'#/connections', label:'Connections' },
     { href:'#/ontology', label:'Ontology' },
     { href:'#/uncertain', label:'Edge Cases' },
     { href:'#/agents', label:'Agents' },
