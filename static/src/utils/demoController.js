@@ -434,6 +434,16 @@ class DemoController {
   }
 
   async engineerScene4() {
+    // Wait for dashboard to fully load
+    await this.wait(2000);
+    
+    // Close hook modal if it exists
+    const closeModalBtn = document.querySelector('[role="dialog"] button');
+    if (closeModalBtn) {
+      await this.click(closeModalBtn);
+      await this.wait(500);
+    }
+    
     // Start with annotation (we're already on dashboard)
     this.showAnnotation('Following a company acquisition, IT integrates a new CRM. autonomOS doesn\'t need to be told; it senses the change in the enterprise landscape.');
     await this.wait(3000);
@@ -444,11 +454,7 @@ class DemoController {
 
     this.hideSystemNotification();
     this.hideAnnotation();
-    await this.wait(500);
-
-    // Wait for dashboard to be fully ready (sources list rendered)
-    await this.waitForElement('[data-demo-ready="sources"]');
-    await this.wait(500);
+    await this.wait(1000);
 
     // Check HubSpot in data sources using data attribute
     const hubspotLabel = await this.waitForElement('[data-demo-source="hubspot"]');
@@ -481,17 +487,19 @@ class DemoController {
       '> Mapping fields: company_name → account_name',
       '> Confidence score: 94.2%',
       '> Creating connection to RevOps Agent...',
-      '> ✓ Connection established'
+      '> ✓ Connection established',
+      '> Pushing data to unified ontology...',
+      '> ✓ Data integration complete'
     ];
     
     this.showAIThinking(thinkingLines);
-    await this.wait(5000);
+    await this.wait(6000);
     this.hideAIThinking();
-    await this.wait(1000);
+    await this.wait(500);
 
-    // Graph should now show the connection animated
-    this.showAnnotation('The DCL automatically maps HubSpot data to the unified ontology and connects it to the RevOps Agent.');
-    await this.wait(3000);
+    // Show annotation about automatic integration
+    this.showAnnotation('The DCL automatically mapped HubSpot data to the unified ontology and integrated it with the RevOps Agent - no human intervention required.');
+    await this.wait(3500);
     this.hideAnnotation();
     await this.wait(500);
 
