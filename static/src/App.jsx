@@ -39,6 +39,7 @@ function AppContent(){
   let Page = null;
   switch(path){
     case '/':
+    case '/connections': Page = <ProtectedRoute><Connections/></ProtectedRoute>; break;
     case '/dcl': Page = <ProtectedRoute><DCLDashboard/></ProtectedRoute>; break;
     case '/ontology': Page = <ProtectedRoute><OntologyMapping/></ProtectedRoute>; break;
     case '/uncertain': Page = <ProtectedRoute><UncertainUnifications/></ProtectedRoute>; break;
@@ -46,7 +47,7 @@ function AppContent(){
     case '/pipeline': Page = <ProtectedRoute><Pipeline/></ProtectedRoute>; break;
     case '/command': Page = <ProtectedRoute requireRole="admin"><CommandCenter/></ProtectedRoute>; break;
     case '/faq': Page = <ProtectedRoute><FAQ/></ProtectedRoute>; break;
-    default: Page = <ProtectedRoute><DCLDashboard/></ProtectedRoute>;
+    default: Page = <ProtectedRoute><Connections/></ProtectedRoute>;
   }
 
   return (
