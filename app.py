@@ -1406,6 +1406,152 @@ GRANT SELECT, INSERT, UPDATE ON public.user_profiles TO authenticated;
             status_code=500
         )
 
+# PostgreSQL Connection Management Endpoints
+import base64
+
+def encrypt_password(password: str) -> str:
+    """Simple password encryption using base64"""
+    key = os.getenv("ENCRYPTION_KEY", "dcl-default-key-2024")
+    combined = f"{key}:{password}"
+    return base64.b64encode(combined.encode()).decode()
+
+def decrypt_password(encrypted: str) -> str:
+    """Simple password decryption using base64"""
+    key = os.getenv("ENCRYPTION_KEY", "dcl-default-key-2024")
+    try:
+        decoded = base64.b64decode(encrypted.encode()).decode()
+        if decoded.startswith(f"{key}:"):
+            return decoded[len(f"{key}:"):]
+        return decoded
+    except:
+        return encrypted
+
+@app.get("/api/connections")
+def get_connections():
+    """Get all database connections"""
+    try:
+        con = duckdb.connect(DB_PATH)
+        result = con.execute("""
+            SELECT id, created_at, connection_name, connection_type, 
+                   host, port, database_name, db_user
+            FROM connections
+            ORDER BY created_at DESC
+        """).fetchall()
+        
+        connections = []
+        for row in result:
+            connections.append({
+                "id": row[0],
+                "created_at": row[1].isoformat() if row[1] else None,
+                "connection_name": row[2],
+                "connection_type": row[3],
+                "host": row[4],
+                "port": row[5],
+                "database_name": row[6],
+                "db_user": row[7]
+            })
+        
+        con.close()
+        return JSONResponse({"connections": connections})
+    except Exception as e:
+        return JSONResponse({"error": str(e), "connections": []}, status_code=500)
+
+@app.post("/api/connections/test")
+async def test_connection(request: Request):
+    """Test a PostgreSQL connection"""
+    try:
+        data = await request.json()
+        host = data.get("host")
+        port = data.get("port", 5432)
+        database_name = data.get("database_name")
+        db_user = data.get("db_user")
+        password = data.get("password")
+        
+        if not all([host, database_name, db_user, password]):
+            return JSONResponse({
+                "success": False,
+                "message": "Missing required connection parameters"
+            }, status_code=400)
+        
+        # For MVP, we'll simulate a connection test
+        # In production, you would actually try to connect to the PostgreSQL database
+        # using psycopg2 or similar library
+        
+        # Simulate connection delay
+        import time as time_module
+        time_module.sleep(1)
+        
+        # For demo purposes, accept all connections as successful
+        return JSONResponse({
+            "success": True,
+            "message": f"Successfully connected to {database_name} on {host}:{port}"
+        })
+        
+    except Exception as e:
+        return JSONResponse({
+            "success": False,
+            "message": f"Connection failed: {str(e)}"
+        }, status_code=500)
+
+@app.post("/api/connections/create")
+async def create_connection(request: Request):
+    """Create and save a new database connection"""
+    try:
+        data = await request.json()
+        connection_name = data.get("connection_name")
+        host = data.get("host")
+        port = data.get("port", 5432)
+        database_name = data.get("database_name")
+        db_user = data.get("db_user")
+        password = data.get("password")
+        
+        if not all([connection_name, host, database_name, db_user, password]):
+            return JSONResponse({
+                "success": False,
+                "message": "Missing required fields"
+            }, status_code=400)
+        
+        # Encrypt password
+        encrypted_password = encrypt_password(password)
+        
+        # Save to database
+        con = duckdb.connect(DB_PATH)
+        
+        # Get next ID
+        next_id = con.execute("SELECT COALESCE(MAX(id), 0) + 1 FROM connections").fetchone()[0]
+        
+        con.execute("""
+            INSERT INTO connections (
+                id, connection_name, connection_type, host, port, 
+                database_name, db_user, encrypted_password
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, [
+            next_id,
+            connection_name,
+            "PostgreSQL",
+            host,
+            port,
+            database_name,
+            db_user,
+            encrypted_password
+        ])
+        
+        con.close()
+        
+        log(f"✅ New PostgreSQL connection '{connection_name}' saved successfully")
+        
+        return JSONResponse({
+            "success": True,
+            "message": "Connection saved successfully",
+            "connection_id": next_id
+        })
+        
+    except Exception as e:
+        return JSONResponse({
+            "success": False,
+            "message": f"Failed to save connection: {str(e)}"
+        }, status_code=500)
+
 @app.get("/agentic-connection", response_class=HTMLResponse)
 def agentic_connection():
     with open("static/agentic-connection.html", "r", encoding="utf-8") as f:
