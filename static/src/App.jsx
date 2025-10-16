@@ -43,8 +43,8 @@ function AppContent(){
   } else {
     switch(path){
       case '/':
-      case '/connections': Page = <ProtectedRoute><Connections/></ProtectedRoute>; break;
       case '/dcl': Page = <ProtectedRoute><DCLDashboard/></ProtectedRoute>; break;
+      case '/connections': Page = <ProtectedRoute><Connections/></ProtectedRoute>; break;
       case '/ontology': Page = <ProtectedRoute><OntologyMapping/></ProtectedRoute>; break;
       case '/uncertain': Page = <ProtectedRoute><UncertainUnifications/></ProtectedRoute>; break;
       case '/agents': Page = <ProtectedRoute><Agents/></ProtectedRoute>; break;
