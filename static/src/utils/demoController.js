@@ -219,25 +219,40 @@ class DemoController {
       await this.click(nextButton);
       await this.wait(500);
 
-      // Fill in connection details - wait for each field
-      const hostInput = await this.waitForElement('input[placeholder*="localhost"]');
-      await this.click(hostInput);
-      await this.type(hostInput, 'analytics.company.com');
+      // Fill in connection details - wait for modal to be visible
+      await this.wait(500);
+      
+      // Find inputs by their position in the modal
+      const inputs = await this.waitForElement(() => {
+        const modal = document.querySelector('.fixed.inset-0');
+        if (modal) {
+          const textInputs = Array.from(modal.querySelectorAll('input[type="text"]'));
+          const passwordInput = modal.querySelector('input[type="password"]');
+          if (textInputs.length >= 3 && passwordInput) {
+            return { host: textInputs[0], db: textInputs[1], user: textInputs[2], password: passwordInput };
+          }
+        }
+        return null;
+      });
+
+      // Type into host field
+      await this.click(inputs.host);
+      await this.type(inputs.host, 'analytics.company.com');
       await this.wait(300);
 
-      const dbInput = await this.waitForElement('input[placeholder*="database_name"]');
-      await this.click(dbInput);
-      await this.type(dbInput, 'analytics_prod');
+      // Type into database field
+      await this.click(inputs.db);
+      await this.type(inputs.db, 'analytics_prod');
       await this.wait(300);
 
-      const userInput = await this.waitForElement('input[placeholder*="username"]');
-      await this.click(userInput);
-      await this.type(userInput, 'analytics_user');
+      // Type into user field
+      await this.click(inputs.user);
+      await this.type(inputs.user, 'analytics_user');
       await this.wait(300);
 
-      const passInput = await this.waitForElement('input[type="password"]');
-      await this.click(passInput);
-      await this.type(passInput, 'test_password');
+      // Type into password field
+      await this.click(inputs.password);
+      await this.type(inputs.password, 'test_password');
       await this.wait(500);
 
       // Wait for and click Test Connection
