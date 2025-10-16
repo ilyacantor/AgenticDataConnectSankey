@@ -179,6 +179,10 @@ class DemoController {
       this.isRunning = false;
       this.hideAnnotation();
       this.notify();
+      
+      // Return to demo home after completion
+      await this.wait(2000);
+      window.location.hash = '#/demo';
     }
   }
 
@@ -196,6 +200,10 @@ class DemoController {
       this.isRunning = false;
       this.hideAnnotation();
       this.notify();
+      
+      // Return to demo home after completion
+      await this.wait(2000);
+      window.location.hash = '#/demo';
     }
   }
 
