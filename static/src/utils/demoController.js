@@ -439,7 +439,7 @@ class DemoController {
     await this.wait(500);
 
     // Show title card
-    this.showTitleCard('But the true power is full autonomy...');
+    this.showTitleCard('This is the true power of the autonomOS DCL intelligent platform');
     await this.wait(3000);
     this.hideTitleCard();
     await this.wait(500);
