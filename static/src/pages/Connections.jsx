@@ -62,7 +62,11 @@ function Connections() {
                 </tr>
               ) : (
                 connections.map((connection) => (
-                  <tr key={connection.id} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors cursor-pointer">
+                  <tr 
+                    key={connection.id} 
+                    onClick={() => window.location.hash = `#/connections/${connection.id}`}
+                    className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors cursor-pointer"
+                  >
                     <td className="py-4 px-6 font-medium">{connection.connection_name}</td>
                     <td className="py-4 px-6 text-slate-400">{connection.connection_type}</td>
                     <td className="py-4 px-6">

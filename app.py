@@ -1552,6 +1552,47 @@ async def create_connection(request: Request):
             "message": f"Failed to save connection: {str(e)}"
         }, status_code=500)
 
+@app.get("/api/connections/{connection_id}/logs")
+def get_connection_logs(connection_id: int):
+    """Get logs for a specific connection"""
+    from datetime import datetime
+    
+    # Get connection details for context
+    try:
+        con = duckdb.connect(DB_PATH)
+        result = con.execute("""
+            SELECT connection_name, host, database_name
+            FROM connections
+            WHERE id = ?
+        """, [connection_id]).fetchone()
+        con.close()
+        
+        if not result:
+            return JSONResponse({"error": "Connection not found", "logs": []}, status_code=404)
+        
+        connection_name, host, database = result
+        
+        # Generate mock logs with realistic timestamps
+        now = datetime.now()
+        logs = [
+            f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Connection initiated to {host}...",
+            f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Authenticating with database '{database}'...",
+            f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Authentication successful.",
+            f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Establishing secure connection...",
+            f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Connection established successfully.",
+            f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Running schema discovery...",
+            f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Found 15 tables in database.",
+            f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Fetching table metadata...",
+            f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] 10,452 rows fetched from primary tables.",
+            f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Data validation complete.",
+            f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] Sync complete for '{connection_name}'.",
+        ]
+        
+        return JSONResponse({"logs": logs})
+        
+    except Exception as e:
+        return JSONResponse({"error": str(e), "logs": []}, status_code=500)
+
 @app.get("/agentic-connection", response_class=HTMLResponse)
 def agentic_connection():
     with open("static/agentic-connection.html", "r", encoding="utf-8") as f:

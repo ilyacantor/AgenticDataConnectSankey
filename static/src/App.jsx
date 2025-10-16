@@ -37,17 +37,22 @@ function AppContent(){
   }
 
   let Page = null;
-  switch(path){
-    case '/':
-    case '/connections': Page = <ProtectedRoute><Connections/></ProtectedRoute>; break;
-    case '/dcl': Page = <ProtectedRoute><DCLDashboard/></ProtectedRoute>; break;
-    case '/ontology': Page = <ProtectedRoute><OntologyMapping/></ProtectedRoute>; break;
-    case '/uncertain': Page = <ProtectedRoute><UncertainUnifications/></ProtectedRoute>; break;
-    case '/agents': Page = <ProtectedRoute><Agents/></ProtectedRoute>; break;
-    case '/pipeline': Page = <ProtectedRoute><Pipeline/></ProtectedRoute>; break;
-    case '/command': Page = <ProtectedRoute requireRole="admin"><CommandCenter/></ProtectedRoute>; break;
-    case '/faq': Page = <ProtectedRoute><FAQ/></ProtectedRoute>; break;
-    default: Page = <ProtectedRoute><Connections/></ProtectedRoute>;
+  // Check for dynamic routes first
+  if (path.startsWith('/connections/') && path.split('/').length === 3) {
+    Page = <ProtectedRoute><ConnectionDetails/></ProtectedRoute>;
+  } else {
+    switch(path){
+      case '/':
+      case '/connections': Page = <ProtectedRoute><Connections/></ProtectedRoute>; break;
+      case '/dcl': Page = <ProtectedRoute><DCLDashboard/></ProtectedRoute>; break;
+      case '/ontology': Page = <ProtectedRoute><OntologyMapping/></ProtectedRoute>; break;
+      case '/uncertain': Page = <ProtectedRoute><UncertainUnifications/></ProtectedRoute>; break;
+      case '/agents': Page = <ProtectedRoute><Agents/></ProtectedRoute>; break;
+      case '/pipeline': Page = <ProtectedRoute><Pipeline/></ProtectedRoute>; break;
+      case '/command': Page = <ProtectedRoute requireRole="admin"><CommandCenter/></ProtectedRoute>; break;
+      case '/faq': Page = <ProtectedRoute><FAQ/></ProtectedRoute>; break;
+      default: Page = <ProtectedRoute><Connections/></ProtectedRoute>;
+    }
   }
 
   return (
