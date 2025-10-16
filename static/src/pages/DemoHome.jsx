@@ -9,9 +9,14 @@ function DemoHome() {
     window.location.hash = '#/connections';
   };
 
+  const startAutonomyDemo = () => {
+    sessionStorage.setItem('demoMode', 'autonomy');
+    window.location.hash = '#/connections';
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100 flex items-center justify-center p-6">
-      <div className="max-w-6xl w-full">
+      <div className="max-w-7xl w-full">
         {/* Header */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
@@ -23,7 +28,7 @@ function DemoHome() {
         </div>
 
         {/* Persona Cards */}
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-3 gap-8">
           {/* Data Engineer Card */}
           <div className="bg-slate-900/50 border border-slate-700 rounded-2xl p-8 hover:border-cyan-500/50 transition-all duration-300 group">
             <div className="flex items-center gap-4 mb-6">
@@ -69,6 +74,30 @@ function DemoHome() {
               className="w-full px-6 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold rounded-xl transition-all duration-300 transform group-hover:scale-105 shadow-lg shadow-purple-500/25"
             >
               Start Business User Demo →
+            </button>
+          </div>
+
+          {/* Full Autonomy Card */}
+          <div className="bg-slate-900/50 border border-slate-700 rounded-2xl p-8 hover:border-green-500/50 transition-all duration-300 group">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
+                <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h2 className="text-3xl font-bold">Full Autonomy</h2>
+            </div>
+            
+            <p className="text-slate-300 mb-8 text-lg leading-relaxed">
+              Watch autonomOS sense enterprise changes, intelligently map data, 
+              and deliver business insights—all without human intervention.
+            </p>
+
+            <button
+              onClick={startAutonomyDemo}
+              className="w-full px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-semibold rounded-xl transition-all duration-300 transform group-hover:scale-105 shadow-lg shadow-green-500/25"
+            >
+              Start Autonomy Demo →
             </button>
           </div>
         </div>

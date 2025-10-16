@@ -34,6 +34,8 @@ function AppContent(){
           window.demoController.runEngineerDemo();
         } else if (demoMode === 'business') {
           window.demoController.runBusinessDemo();
+        } else if (demoMode === 'autonomy') {
+          window.demoController.runAutonomyDemo();
         }
         sessionStorage.removeItem('demoMode');
       }, 1500);

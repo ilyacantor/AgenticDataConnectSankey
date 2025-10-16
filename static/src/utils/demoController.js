@@ -237,6 +237,24 @@ class DemoController {
       await this.engineerScene1();
       await this.engineerScene2();
       await this.engineerScene3();
+    } catch (error) {
+      console.error('Demo error:', error);
+    } finally {
+      this.isRunning = false;
+      this.hideAnnotation();
+      this.notify();
+      
+      // Return to demo home after completion
+      await this.wait(2000);
+      window.location.hash = '#/demo';
+    }
+  }
+
+  async runAutonomyDemo() {
+    this.isRunning = true;
+    this.notify();
+
+    try {
       await this.engineerScene4();
     } catch (error) {
       console.error('Demo error:', error);
