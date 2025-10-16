@@ -6,7 +6,15 @@ function Login() {
   const [isSignUp, setIsSignUp] = React.useState(false);
   const [showSetup, setShowSetup] = React.useState(false);
   const [setupInProgress, setSetupInProgress] = React.useState(false);
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, roleError } = useAuth();
+
+  // Show setup button if there's a role error about user_profiles
+  React.useEffect(() => {
+    if (roleError && roleError.includes('user_profiles')) {
+      setShowSetup(true);
+      setError('Database not set up. Click "Open Setup Guide" below.');
+    }
+  }, [roleError]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

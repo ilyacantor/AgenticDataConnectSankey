@@ -83,6 +83,12 @@ function AuthProvider({ children }) {
         .single();
 
       if (error) {
+        // Check if it's a table not found error
+        if (error.code === 'PGRST205' || (error.message && error.message.includes('user_profiles'))) {
+          setRoleError('Table user_profiles not found. Database setup required.');
+          return;
+        }
+        
         if (error.code === 'PGRST116') {
           // No profile found - wait for trigger to create it
           if (retryCount < MAX_RETRIES) {
