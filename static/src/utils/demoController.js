@@ -311,20 +311,107 @@ class DemoController {
   }
 
   async businessScene1() {
-    await this.wait(1000);
-    
     this.showAnnotation('A Marketing Ops Manager needs to connect their team\'s tools. The DCL provides a simple, self-service catalog of common applications.');
-    await this.wait(3000);
+    await this.wait(2000);
+
+    try {
+      // Click Add New Connection
+      const addButton = await this.waitForElement(() => 
+        Array.from(document.querySelectorAll('button')).find(btn => 
+          btn.textContent.includes('Add New Connection')
+        )
+      );
+      await this.click(addButton);
+      await this.wait(500);
+
+      // Type connection name
+      const nameInput = await this.waitForElement('input[placeholder*="Production"]');
+      await this.click(nameInput);
+      await this.type(nameInput, 'HubSpot Marketing');
+      await this.wait(500);
+
+      // Click Next
+      const nextButton = await this.waitForElement(() =>
+        Array.from(document.querySelectorAll('button')).find(btn => 
+          btn.textContent.includes('Next')
+        )
+      );
+      await this.click(nextButton);
+      await this.wait(500);
+      
+    } catch (error) {
+      console.error('Business Scene 1 failed:', error);
+    }
   }
 
   async businessScene2() {
     this.showAnnotation('Connecting is as simple as logging in with your HubSpot account. No need to manage API keys or file an IT ticket.');
-    await this.wait(3000);
+    await this.wait(1000);
+
+    try {
+      // Find inputs and auto-fill with HubSpot-like credentials
+      const inputs = await this.waitForElement(() => {
+        const modal = document.querySelector('.fixed.inset-0');
+        if (modal) {
+          const textInputs = Array.from(modal.querySelectorAll('input[type="text"]'));
+          const passwordInput = modal.querySelector('input[type="password"]');
+          if (textInputs.length >= 3 && passwordInput) {
+            return { host: textInputs[0], db: textInputs[1], user: textInputs[2], password: passwordInput };
+          }
+        }
+        return null;
+      });
+
+      await this.click(inputs.host);
+      await this.type(inputs.host, 'api.hubspot.com');
+      await this.wait(300);
+
+      await this.click(inputs.db);
+      await this.type(inputs.db, 'hubspot_marketing');
+      await this.wait(300);
+
+      await this.click(inputs.user);
+      await this.type(inputs.user, 'marketing_team');
+      await this.wait(300);
+
+      await this.click(inputs.password);
+      await this.type(inputs.password, 'oauth_token_123');
+      await this.wait(500);
+
+      // Click Test Connection
+      const testButton = await this.waitForElement(() =>
+        Array.from(document.querySelectorAll('button')).find(btn => 
+          btn.textContent.includes('Test Connection')
+        )
+      );
+      await this.click(testButton);
+      await this.wait(2000);
+
+    } catch (error) {
+      console.error('Business Scene 2 failed:', error);
+    }
   }
 
   async businessScene3() {
     this.showAnnotation('Business users can trigger a manual refresh after important events, like a campaign launch, to get the freshest data into their reports.');
-    await this.wait(4000);
+    await this.wait(1000);
+
+    try {
+      // Click Save Connection
+      const saveButton = await this.waitForElement(() =>
+        Array.from(document.querySelectorAll('button')).find(btn => 
+          btn.textContent.includes('Save Connection')
+        )
+      );
+      await this.click(saveButton);
+      await this.wait(2000);
+
+      this.showAnnotation('HubSpot is now connected! Marketing data flows automatically into your reports.');
+      await this.wait(3000);
+      
+    } catch (error) {
+      console.error('Business Scene 3 failed:', error);
+    }
   }
 }
 
