@@ -1,0 +1,85 @@
+Of course. Here are the prompts to build the automated, story-driven demo. I've broken it down into logical steps to build the experience piece by piece.
+
+Prompt 1: Create the Persona Selection Homepage
+"Let's create a new, story-driven demo experience.
+
+Create a new homepage for the application that will serve as a persona selection screen.
+
+The page should have a clean, modern layout with a title like 'autonomOS: The Intelligent Data Layer'.
+
+Create two distinct sections or cards on this page.
+
+The first section should be titled 'For the Data Engineer' with a brief description: 'See how autonomOS automates data integration, provides deep visibility, and speeds up troubleshooting.' Below this, add a primary button with the text 'Start Engineer Demo'.
+
+The second section should be titled 'For the Business User' with a description: 'See how autonomOS empowers teams like Marketing and Sales to connect their own tools and access fresh data without filing IT tickets.' Below this, add a primary button with the text 'Start Business User Demo'.
+
+For now, these buttons don't need to be functional. This prompt is only for creating the static UI of the new homepage."
+
+Prompt 2: Build the Data Engineer Demo - Scenes 1 & 2
+"Now let's build the first part of the automated demo for the Data Engineer. When the 'Start Engineer Demo' button is clicked, it should trigger a choreographed sequence.
+
+Create a 'demo controller' in JavaScript that manages the scenes.
+
+Scene 1 (Adding a Connection):
+
+Automatically navigate to the connection dashboard.
+
+Animate a cursor icon moving to and clicking the '+ Add New Connection' button.
+
+The Postgres wizard modal should appear, and its fields should auto-populate with realistic-looking credentials.
+
+Display an on-screen annotation box with the text: 'A Data Engineer needs to add a new production database. The DCL's guided wizard makes this a simple, code-free process in seconds.'
+
+After a pause, simulate a click on the 'Test Connection' button, which shows a 'Success' message, and then save the connection.
+
+Scene 2 (Monitoring):
+
+The wizard modal closes.
+
+The newly added connection should be highlighted in the dashboard table.
+
+Update the annotation text to: 'All connections are monitored from a central dashboard, providing an instant health check of the entire data ecosystem.'"
+
+Prompt 3: Build the Data Engineer Demo - Scene 3
+"Let's complete the Data Engineer demo by building the troubleshooting scene. This will follow immediately after Scene 2.
+
+Simulate Failure: After a few seconds, find an existing (mock) connection in the dashboard table (e.g., one for 'Salesforce') and change its status badge from green 'Connected' to red 'Failed'.
+
+Proactive Alert: Animate a simple Slack notification component sliding in from the corner of the screen. The notification should say: '🚨 Alert: Salesforce data sync failed.'
+
+Update Annotation: Change the annotation text to: 'When a sync fails, the right people are proactively alerted. No more discovering broken dashboards hours later.'
+
+Drill Down: Animate the cursor moving to and clicking on the failed 'Salesforce' connection row.
+
+Diagnose: Navigate to the logging page for that connection. The mock logs should be displayed, with a specific error line like Error: Invalid API token highlighted in red.
+
+Final Annotation: Change the annotation text to: 'Engineers can drill down into detailed logs directly in the UI to diagnose and resolve the issue fast, minimizing data downtime.' The demo ends here."
+
+Prompt 4: Build the Business User Demo
+"Finally, let's create the automated demo for the Business User, triggered by the 'Start Business User Demo' button. This flow should be simpler and focus on self-service.
+
+Scene 1 (Self-Service Connection):
+
+Start on the dashboard and animate the cursor clicking '+ Add New Connection'.
+
+Instead of the Postgres wizard, show a new modal that displays a grid of application icons (e.g., HubSpot, Salesforce, Stripe).
+
+Animate the cursor clicking on the 'HubSpot' icon.
+
+Display the annotation: 'A Marketing Ops Manager needs to connect their team's tools. The DCL provides a simple, self-service catalog of common applications.'
+
+Scene 2 (Simple Auth):
+
+Simulate an OAuth flow by showing a simple pop-up that says 'Connecting to HubSpot...' and then changes to 'Successfully connected HubSpot'.
+
+Update the annotation: 'Connecting is as simple as logging in with your HubSpot account. No need to manage API keys or file an IT ticket.'
+
+Scene 3 (Accessing Fresh Data):
+
+The modal closes, and the dashboard now shows the new 'HubSpot' connection.
+
+Highlight the 'Last Refreshed' timestamp.
+
+Animate the cursor clicking a 'Sync Now' button on that row. The button should show a brief loading spinner and then the timestamp should update to the current time.
+
+Final annotation: 'Business users can trigger a manual refresh after important events, like a campaign launch, to get the freshest data into their reports.' The demo ends here."

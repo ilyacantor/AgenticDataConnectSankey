@@ -1,12 +1,38 @@
 function AppContent(){
   const [path, setPath] = React.useState(Router.current());
   const { user, loading, roleError, authEnabled } = useAuth();
+  const [demoState, setDemoState] = React.useState({
+    cursorPosition: { x: 0, y: 0 },
+    annotationText: '',
+    isRunning: false
+  });
 
   React.useEffect(()=>{
     const onHash = ()=> setPath(Router.current());
     window.addEventListener('hashchange', onHash);
     return ()=> window.removeEventListener('hashchange', onHash);
   },[]);
+
+  React.useEffect(() => {
+    if (window.demoController) {
+      const unsubscribe = window.demoController.subscribe(setDemoState);
+      return unsubscribe;
+    }
+  }, []);
+
+  React.useEffect(() => {
+    const demoMode = sessionStorage.getItem('demoMode');
+    if (demoMode && path === '/connections' && window.demoController) {
+      setTimeout(() => {
+        if (demoMode === 'engineer') {
+          window.demoController.runEngineerDemo();
+        } else if (demoMode === 'business') {
+          window.demoController.runBusinessDemo();
+        }
+        sessionStorage.removeItem('demoMode');
+      }, 500);
+    }
+  }, [path]);
 
   // Redirect to login if not authenticated (except on login page) - only if auth is enabled
   React.useEffect(() => {
@@ -43,6 +69,7 @@ function AppContent(){
   } else {
     switch(path){
       case '/':
+      case '/demo': Page = <DemoHome/>; break;
       case '/dcl': Page = <ProtectedRoute><DCLDashboard/></ProtectedRoute>; break;
       case '/connections': Page = <ProtectedRoute><Connections/></ProtectedRoute>; break;
       case '/ontology': Page = <ProtectedRoute><OntologyMapping/></ProtectedRoute>; break;
@@ -59,6 +86,12 @@ function AppContent(){
     <div className="min-h-screen flex flex-col">
       <NavBar/>
       <main className="flex-1">{Page}</main>
+      {demoState.isRunning && (
+        <>
+          <DemoCursor position={demoState.cursorPosition} visible={true} />
+          <DemoAnnotation text={demoState.annotationText} visible={!!demoState.annotationText} />
+        </>
+      )}
     </div>
   );
 }
