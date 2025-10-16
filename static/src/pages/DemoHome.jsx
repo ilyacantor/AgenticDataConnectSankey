@@ -11,7 +11,7 @@ function DemoHome() {
 
   const startAutonomyDemo = () => {
     sessionStorage.setItem('demoMode', 'autonomy');
-    window.location.hash = '#/connections';
+    window.location.hash = '#/dashboard';
   };
 
   return (

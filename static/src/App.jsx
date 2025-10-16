@@ -27,18 +27,24 @@ function AppContent(){
 
   React.useEffect(() => {
     const demoMode = sessionStorage.getItem('demoMode');
-    if (demoMode && path === '/connections' && window.demoController) {
-      // Wait longer for DOM to be fully ready
-      setTimeout(() => {
-        if (demoMode === 'engineer') {
-          window.demoController.runEngineerDemo();
-        } else if (demoMode === 'business') {
-          window.demoController.runBusinessDemo();
-        } else if (demoMode === 'autonomy') {
-          window.demoController.runAutonomyDemo();
-        }
-        sessionStorage.removeItem('demoMode');
-      }, 1500);
+    if (demoMode && window.demoController) {
+      // Engineer and Business demos start from connections, Autonomy starts from dashboard
+      const shouldRun = (demoMode === 'autonomy' && path === '/dashboard') || 
+                        ((demoMode === 'engineer' || demoMode === 'business') && path === '/connections');
+      
+      if (shouldRun) {
+        // Wait longer for DOM to be fully ready
+        setTimeout(() => {
+          if (demoMode === 'engineer') {
+            window.demoController.runEngineerDemo();
+          } else if (demoMode === 'business') {
+            window.demoController.runBusinessDemo();
+          } else if (demoMode === 'autonomy') {
+            window.demoController.runAutonomyDemo();
+          }
+          sessionStorage.removeItem('demoMode');
+        }, 1500);
+      }
     }
   }, [path]);
 

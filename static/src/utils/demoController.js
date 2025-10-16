@@ -434,7 +434,7 @@ class DemoController {
   }
 
   async engineerScene4() {
-    // Start with annotation
+    // Start with annotation (we're already on dashboard)
     this.showAnnotation('Following a company acquisition, IT integrates a new CRM. autonomOS doesn\'t need to be told; it senses the change in the enterprise landscape.');
     await this.wait(3000);
 
@@ -444,11 +444,7 @@ class DemoController {
 
     this.hideSystemNotification();
     this.hideAnnotation();
-    await this.wait(500);
-
-    // Navigate to dashboard to show graph
-    window.location.hash = '#/dashboard';
-    await this.wait(1500);
+    await this.wait(1000);
 
     // Check HubSpot in data sources
     const hubspotCheckbox = await this.waitForElement(() => {
