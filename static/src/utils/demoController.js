@@ -123,6 +123,35 @@ class DemoController {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  async waitForElement(selector, options = {}) {
+    const { timeout = 5000, interval = 100 } = options;
+    const startTime = Date.now();
+
+    return new Promise((resolve, reject) => {
+      const check = () => {
+        let element;
+        
+        if (typeof selector === 'function') {
+          element = selector();
+        } else if (typeof selector === 'string') {
+          element = document.querySelector(selector);
+        } else {
+          element = selector;
+        }
+
+        if (element) {
+          resolve(element);
+        } else if (Date.now() - startTime > timeout) {
+          console.error(`Element not found after ${timeout}ms:`, selector);
+          reject(new Error(`Timeout waiting for element: ${selector}`));
+        } else {
+          setTimeout(check, interval);
+        }
+      };
+      check();
+    });
+  }
+
   easeInOutCubic(t) {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   }
@@ -162,36 +191,78 @@ class DemoController {
   }
 
   async engineerScene1() {
-    await this.wait(1000);
-    
     this.showAnnotation('A Data Engineer needs to add a new production database. The DCL\'s guided wizard makes this a simple, code-free process in seconds.');
-    await this.wait(2000);
-
-    await this.click('button:contains("Add New Connection")');
-    await this.wait(500);
-
-    const nameInput = 'input[placeholder*="Production"]';
-    await this.click(nameInput);
-    await this.type(nameInput, 'Production Analytics DB');
-    await this.wait(500);
-
-    await this.click('button:contains("Next")');
-    await this.wait(500);
-
-    await this.type('input[placeholder*="localhost"]', 'analytics.company.com');
-    await this.wait(300);
-    await this.type('input[placeholder*="database_name"]', 'analytics_prod');
-    await this.wait(300);
-    await this.type('input[placeholder*="username"]', 'analytics_user');
-    await this.wait(300);
-    await this.type('input[type="password"]', 'secure_password_123');
-    await this.wait(500);
-
-    await this.click('button:contains("Test Connection")');
-    await this.wait(2000);
-
-    await this.click('button:contains("Save Connection")');
     await this.wait(1000);
+
+    try {
+      // Wait for and click the Add New Connection button
+      const addButton = await this.waitForElement(() => 
+        Array.from(document.querySelectorAll('button')).find(btn => 
+          btn.textContent.includes('Add New Connection')
+        )
+      );
+      await this.click(addButton);
+      await this.wait(500);
+
+      // Wait for and type connection name
+      const nameInput = await this.waitForElement('input[placeholder*="Production"]');
+      await this.click(nameInput);
+      await this.type(nameInput, 'Production Analytics DB');
+      await this.wait(500);
+
+      // Wait for and click Next button
+      const nextButton = await this.waitForElement(() =>
+        Array.from(document.querySelectorAll('button')).find(btn => 
+          btn.textContent.includes('Next')
+        )
+      );
+      await this.click(nextButton);
+      await this.wait(500);
+
+      // Fill in connection details - wait for each field
+      const hostInput = await this.waitForElement('input[placeholder*="localhost"]');
+      await this.click(hostInput);
+      await this.type(hostInput, 'analytics.company.com');
+      await this.wait(300);
+
+      const dbInput = await this.waitForElement('input[placeholder*="database_name"]');
+      await this.click(dbInput);
+      await this.type(dbInput, 'analytics_prod');
+      await this.wait(300);
+
+      const userInput = await this.waitForElement('input[placeholder*="username"]');
+      await this.click(userInput);
+      await this.type(userInput, 'analytics_user');
+      await this.wait(300);
+
+      const passInput = await this.waitForElement('input[type="password"]');
+      await this.click(passInput);
+      await this.type(passInput, 'test_password');
+      await this.wait(500);
+
+      // Wait for and click Test Connection
+      const testButton = await this.waitForElement(() =>
+        Array.from(document.querySelectorAll('button')).find(btn => 
+          btn.textContent.includes('Test Connection')
+        )
+      );
+      await this.click(testButton);
+      await this.wait(2000);
+
+      // Wait for and click Save Connection
+      const saveButton = await this.waitForElement(() =>
+        Array.from(document.querySelectorAll('button')).find(btn => 
+          btn.textContent.includes('Save Connection')
+        )
+      );
+      await this.click(saveButton);
+      await this.wait(1000);
+      
+    } catch (error) {
+      console.error('Engineer Scene 1 failed:', error);
+      this.showAnnotation('Demo failed to complete. Please refresh and try again.');
+      await this.wait(3000);
+    }
   }
 
   async engineerScene2() {

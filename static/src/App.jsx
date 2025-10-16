@@ -23,6 +23,7 @@ function AppContent(){
   React.useEffect(() => {
     const demoMode = sessionStorage.getItem('demoMode');
     if (demoMode && path === '/connections' && window.demoController) {
+      // Wait longer for DOM to be fully ready
       setTimeout(() => {
         if (demoMode === 'engineer') {
           window.demoController.runEngineerDemo();
@@ -30,7 +31,7 @@ function AppContent(){
           window.demoController.runBusinessDemo();
         }
         sessionStorage.removeItem('demoMode');
-      }, 500);
+      }, 1500);
     }
   }, [path]);
 
