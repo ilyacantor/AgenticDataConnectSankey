@@ -234,7 +234,7 @@ function AddConnectionWizard({ isOpen, onClose, onSuccess }) {
                 <div className="flex gap-3">
                   <button
                     onClick={handleTestConnection}
-                    disabled={isTesting || !formData.host || !formData.database_name || !formData.db_user}
+                    disabled={isTesting || !formData.host || !formData.database_name || !formData.db_user || !formData.password}
                     className="px-6 py-2 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
                     {isTesting && (

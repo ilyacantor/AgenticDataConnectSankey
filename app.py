@@ -1461,16 +1461,34 @@ async def test_connection(request: Request):
     """Test a PostgreSQL connection"""
     try:
         data = await request.json()
-        host = data.get("host")
-        port = data.get("port", 5432)
-        database_name = data.get("database_name")
-        db_user = data.get("db_user")
-        password = data.get("password")
+        host = data.get("host", "").strip()
+        database_name = data.get("database_name", "").strip()
+        db_user = data.get("db_user", "").strip()
+        password = data.get("password", "")
         
-        if not all([host, database_name, db_user, password]):
+        # Normalize and validate port
+        try:
+            port = int(data.get("port", 5432))
+        except (ValueError, TypeError):
+            port = None
+        
+        # Validate all required fields
+        errors = []
+        if not host:
+            errors.append("Host is required")
+        if not database_name:
+            errors.append("Database name is required")
+        if not db_user:
+            errors.append("User is required")
+        if not password:
+            errors.append("Password is required")
+        if port is None or port < 1 or port > 65535:
+            errors.append("Port must be a valid number between 1 and 65535")
+            
+        if errors:
             return JSONResponse({
                 "success": False,
-                "message": "Missing required connection parameters"
+                "message": "; ".join(errors)
             }, status_code=400)
         
         # For MVP, we'll simulate a connection test
@@ -1498,17 +1516,37 @@ async def create_connection(request: Request):
     """Create and save a new database connection"""
     try:
         data = await request.json()
-        connection_name = data.get("connection_name")
-        host = data.get("host")
-        port = data.get("port", 5432)
-        database_name = data.get("database_name")
-        db_user = data.get("db_user")
-        password = data.get("password")
+        connection_name = data.get("connection_name", "").strip()
+        host = data.get("host", "").strip()
+        database_name = data.get("database_name", "").strip()
+        db_user = data.get("db_user", "").strip()
+        password = data.get("password", "")
         
-        if not all([connection_name, host, database_name, db_user, password]):
+        # Normalize and validate port
+        try:
+            port = int(data.get("port", 5432))
+        except (ValueError, TypeError):
+            port = None
+        
+        # Comprehensive validation
+        errors = []
+        if not connection_name:
+            errors.append("Connection name is required")
+        if not host:
+            errors.append("Host is required")
+        if not database_name:
+            errors.append("Database name is required")
+        if not db_user:
+            errors.append("User is required")
+        if not password:
+            errors.append("Password is required")
+        if port is None or port < 1 or port > 65535:
+            errors.append("Port must be a valid number between 1 and 65535")
+            
+        if errors:
             return JSONResponse({
                 "success": False,
-                "message": "Missing required fields"
+                "message": "; ".join(errors)
             }, status_code=400)
         
         # Encrypt password
