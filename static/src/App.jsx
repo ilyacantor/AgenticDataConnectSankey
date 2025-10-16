@@ -1,6 +1,6 @@
 function AppContent(){
   const [path, setPath] = React.useState(Router.current());
-  const { user, loading } = useAuth();
+  const { user, loading, roleError } = useAuth();
 
   React.useEffect(()=>{
     const onHash = ()=> setPath(Router.current());
@@ -13,7 +13,11 @@ function AppContent(){
     if (!loading && !user && path !== '/login') {
       window.location.hash = '#/login';
     }
-  }, [user, loading, path]);
+    // Also redirect to login if there's a role error (database not set up)
+    if (!loading && user && roleError && roleError.includes('user_profiles') && path !== '/login') {
+      window.location.hash = '#/login';
+    }
+  }, [user, loading, path, roleError]);
 
   // Show login page without protection
   if (path === '/login') {

@@ -25,22 +25,18 @@ function Login() {
       if (isSignUp) {
         const { error } = await signUp(email, password);
         if (error) {
-          // Check if it's a table not found error
-          if (error.message && error.message.includes('user_profiles')) {
-            setShowSetup(true);
-            setError('Database not set up. Click "Setup Database" button below.');
-          } else {
-            setError(error.message || 'Failed to sign up');
-          }
-        } else {
-          window.location.hash = '#/dcl';
+          setError(error.message || 'Failed to sign up');
         }
+        // Don't redirect - let the roleError effect handle setup display
       } else {
         const { error } = await signIn(email, password);
         if (error) {
           setError(error.message || 'Failed to sign in');
         } else {
-          window.location.hash = '#/dcl';
+          // Only redirect if no role error
+          if (!roleError) {
+            window.location.hash = '#/dcl';
+          }
         }
       }
     } catch (err) {
