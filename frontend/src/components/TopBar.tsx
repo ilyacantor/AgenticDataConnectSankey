@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Search, Bell, ChevronDown } from 'lucide-react';
-import RunAllDropdown from './RunAllDropdown';
 import type { User, PersonaType } from '../types';
 
 interface TopBarProps {
@@ -25,10 +24,6 @@ export default function TopBar({ user, onPersonaChange }: TopBarProps) {
             className="w-full bg-gray-800 text-gray-200 pl-10 pr-4 py-2 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500 transition-colors"
           />
         </div>
-      </div>
-
-      <div className="flex items-center gap-3">
-        <RunAllDropdown />
       </div>
 
       <div className="relative">

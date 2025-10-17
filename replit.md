@@ -19,26 +19,29 @@ The project aims to provide a dynamic data connection layer, aligning diverse da
   - xAO Page: Removed AOA Functions and Live Plans tabs, streamlined to show only xAO Metrics
   - AOA Status Card: Removed "View Details" button for cleaner interface
 - **Top Bar Updates**:
-  - Removed Autonomy Mode and UI Mode toggles for cleaner interface
-  - Added prominent "Run All" dropdown button in top bar (emerald green)
+  - Removed Autonomy Mode, UI Mode, and Run All buttons for cleaner, minimal interface
+- **DCL Graph Container Updates**:
+  - Removed Agent Consumers column (simplified from 3-column to 2-column layout)
+  - Replaced Prod Mode toggle with "Run All" dropdown in Intelligence Engine box (emerald green button)
     - Production Mode (dev_mode=false): Uses AI/RAG for intelligent semantic validation
     - Heuristic Mode (dev_mode=true): Uses fast deterministic domain-based filtering
     - Connects all 9 data sources: dynamics, salesforce, supabase, mongodb, hubspot, snowflake, sap, netsuite, legacy_sql
     - Maps to all agents: finops_pilot, revops_pilot
-- **DCL Graph Container Updates**:
-  - Removed Agent Consumers column (simplified from 3-column to 2-column layout)
-  - Added Prod Mode toggle in Intelligence Engine box (calls /toggle_dev_mode API via GET)
   - Integrated RAG Learning Engine panel showing retrieved mappings with similarity scores
   - Integrated Narration scroll box with typing animation for real-time event display
 - **Sankey Graph Enhancements**:
   - Default view now shows ALL sources connected to ALL agents (no filtering)
   - Improved bounding box constraints to prevent visual bleeding
   - Responsive sizing (400px mobile, 500px tablet, 600px desktop)
-  - Added hover tooltips showing node type, system, and details
-  - Added click handlers to fetch and display preview data for each node
+  - Node hover tooltips showing node type, system, and details
+  - Node click handlers to fetch and display preview data
+  - **Edge hover tooltips** showing detailed field mappings (matching legacy UI):
+    - Table Fields for system→table connections
+    - Field Mappings for table→ontology connections (source field → ontology field with confidence)
+    - Entity Fields for ontology→agent connections
 - **State Management**: Created useDCLState hook for centralized /state API polling (5-second intervals)
 - **Bug Fixes**: Fixed Run All functionality - corrected HTTP method (GET) and source/agent parameters
-- **Build Status**: Clean production build (259.28 kB), zero TypeScript errors, full feature parity with legacy UI
+- **Build Status**: Clean production build (260.04 kB), zero TypeScript errors, full feature parity with legacy UI
 
 ## System Architecture
 

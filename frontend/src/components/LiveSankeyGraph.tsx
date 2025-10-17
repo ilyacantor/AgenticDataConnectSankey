@@ -330,7 +330,50 @@ function renderSankey(
       const edgeKey = `${sourceNode?.id}-${targetNode?.id}`;
       return animatingEdges.has(edgeKey) ? 'animate-pulse' : '';
     })
-    .style('cursor', 'pointer');
+    .style('cursor', 'pointer')
+    .on('mouseenter', function(event: MouseEvent, d: any) {
+      d3.select(this).attr('stroke-opacity', 0.7);
+      
+      const linkIndex = links.indexOf(d);
+      const originalLink = sankeyLinks[linkIndex];
+      const sourceNodeData = sankeyNodes.find(n => n.name === d.source.name);
+      const targetNodeData = sankeyNodes.find(n => n.name === d.target.name);
+      
+      const tooltipContent = getEdgeTooltip(sourceNodeData, targetNodeData, originalLink);
+      
+      const edgeTooltip = d3.select('body')
+        .selectAll('.sankey-edge-tooltip')
+        .data([null])
+        .join('div')
+        .attr('class', 'sankey-edge-tooltip')
+        .style('position', 'fixed')
+        .style('background', 'rgba(15, 23, 42, 0.95)')
+        .style('color', '#e2e8f0')
+        .style('padding', '8px 12px')
+        .style('border-radius', '6px')
+        .style('border', '1px solid #475569')
+        .style('font-size', '12px')
+        .style('pointer-events', 'none')
+        .style('z-index', 10000)
+        .style('box-shadow', '0 4px 6px rgba(0, 0, 0, 0.3)')
+        .style('max-width', '400px')
+        .style('font-family', 'system-ui, -apple-system, sans-serif');
+      
+      edgeTooltip
+        .html(tooltipContent)
+        .style('left', (event.pageX + 10) + 'px')
+        .style('top', (event.pageY - 10) + 'px')
+        .style('opacity', 1);
+    })
+    .on('mousemove', function(event: MouseEvent) {
+      d3.select('.sankey-edge-tooltip')
+        .style('left', (event.pageX + 10) + 'px')
+        .style('top', (event.pageY - 10) + 'px');
+    })
+    .on('mouseleave', function() {
+      d3.select(this).attr('stroke-opacity', 0.3);
+      d3.select('.sankey-edge-tooltip').style('opacity', 0);
+    });
 
   const nodeGroups = svg.append('g').selectAll('g').data(nodes).join('g');
 
@@ -480,4 +523,85 @@ function renderSankey(
       .attr('stroke-width', 1)
       .attr('rx', 4);
   });
+
+  function getEdgeTooltip(sourceNodeData: SankeyNode | undefined, targetNodeData: SankeyNode | undefined, linkData: SankeyLink): string {
+    if (!sourceNodeData || !targetNodeData) return 'Data Flow';
+    
+    const sourceName = sourceNodeData.name || 'Unknown';
+    const targetName = targetNodeData.name || 'Unknown';
+    
+    let flowDescription = '';
+    if (sourceNodeData.type === 'source_parent' && targetNodeData.type === 'source') {
+      flowDescription = 'System to table connection';
+    } else if (sourceNodeData.type === 'source' && targetNodeData.type === 'ontology') {
+      flowDescription = 'Raw data mapped to unified schema';
+    } else if (sourceNodeData.type === 'ontology' && targetNodeData.type === 'agent') {
+      flowDescription = 'Ontology field consumed by agent';
+    } else {
+      flowDescription = 'Data flow';
+    }
+    
+    let tooltip = `
+      <strong>Data Flow</strong><br>
+      <span style="color: #94a3b8; font-size: 10px;">${flowDescription}</span><br>
+      <div style="margin-top: 4px; padding-top: 4px; border-top: 1px solid #475569;">
+        <span style="color: #60a5fa;">From:</span> ${sourceName}<br>
+        <span style="color: #34d399;">To:</span> ${targetName}
+      </div>
+    `;
+    
+    if (sourceNodeData.type === 'source_parent' && targetNodeData.type === 'source' && linkData?.tableFields?.length) {
+      tooltip += `
+        <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid #475569;">
+          <strong style="color: #a78bfa; font-size: 10px;">Table Fields:</strong><br>
+          <div style="max-height: 120px; overflow-y: auto; margin-top: 4px;">
+      `;
+      linkData.tableFields.forEach(field => {
+        tooltip += `
+          <div style="font-size: 10px; margin: 2px 0; color: #cbd5e1;">
+            <span style="color: #60a5fa;">•</span> ${field}
+          </div>
+        `;
+      });
+      tooltip += `</div></div>`;
+    }
+    
+    if (linkData?.fieldMappings?.length) {
+      tooltip += `
+        <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid #475569;">
+          <strong style="color: #a78bfa; font-size: 10px;">Field Mappings:</strong><br>
+          <div style="max-height: 120px; overflow-y: auto; margin-top: 4px;">
+      `;
+      linkData.fieldMappings.forEach((field: any) => {
+        const sourceField = field.source || 'N/A';
+        const ontoField = field.onto_field || 'N/A';
+        const confidence = field.confidence ? `(${Math.round(field.confidence * 100)}%)` : '';
+        tooltip += `
+          <div style="font-size: 10px; margin: 2px 0; color: #cbd5e1;">
+            <span style="color: #60a5fa;">${sourceField}</span> → <span style="color: #34d399;">${ontoField}</span> <span style="color: #94a3b8;">${confidence}</span>
+          </div>
+        `;
+      });
+      tooltip += `</div></div>`;
+    }
+    
+    if (sourceNodeData.type === 'ontology' && targetNodeData.type === 'agent' && linkData?.entityFields?.length) {
+      const entityName = linkData.entityName || 'entity';
+      tooltip += `
+        <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid #475569;">
+          <strong style="color: #a78bfa; font-size: 10px;">Unified ${entityName.replace('_', ' ').toUpperCase()} Fields:</strong><br>
+          <div style="max-height: 120px; overflow-y: auto; margin-top: 4px;">
+      `;
+      linkData.entityFields.forEach(field => {
+        tooltip += `
+          <div style="font-size: 10px; margin: 2px 0; color: #cbd5e1;">
+            <span style="color: #34d399;">•</span> ${field}
+          </div>
+        `;
+      });
+      tooltip += `</div></div>`;
+    }
+    
+    return tooltip;
+  }
 }

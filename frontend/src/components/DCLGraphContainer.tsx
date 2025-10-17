@@ -81,54 +81,9 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
     <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold text-white">Data Connection Layer (DCL)</h2>
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <button
-              onClick={() => setShowRunAllDropdown(!showRunAllDropdown)}
-              disabled={isProcessing}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-lg text-sm font-medium text-white shadow-lg shadow-emerald-500/30 transition-all disabled:opacity-50"
-            >
-              {isProcessing ? (
-                <>
-                  <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <Play className="w-4 h-4" />
-                  Run All
-                  <ChevronDown className="w-4 h-4" />
-                </>
-              )}
-            </button>
-            
-            {showRunAllDropdown && !isProcessing && (
-              <div className="absolute right-0 mt-2 w-64 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50">
-                <button
-                  onClick={() => handleRunAll(false)}
-                  className="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors rounded-t-lg"
-                >
-                  <div className="text-sm font-medium text-white">Run All in Production Mode</div>
-                  <div className="text-xs text-gray-400 mt-1">Uses AI/RAG for intelligent mapping</div>
-                </button>
-                <button
-                  onClick={() => handleRunAll(true)}
-                  className="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors rounded-b-lg border-t border-gray-700"
-                >
-                  <div className="text-sm font-medium text-white">Run All in Heuristic Mode</div>
-                  <div className="text-xs text-gray-400 mt-1">Uses heuristic-only mapping</div>
-                </button>
-              </div>
-            )}
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span className="text-sm text-gray-400">Live</span>
-          </div>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+          <span className="text-sm text-gray-400">Live</span>
         </div>
       </div>
 
@@ -147,19 +102,48 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
                   <h3 className="text-xs font-semibold text-white">
                     Intelligent Mapping & Ontology Engine
                   </h3>
-                  <button
-                    onClick={handleProdModeToggle}
-                    className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-all ${
-                      prodMode
-                        ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                        : 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
-                    }`}
-                  >
-                    <div className={`w-1.5 h-1.5 rounded-full ${prodMode ? 'bg-green-400' : 'bg-orange-400'}`} />
-                    <span className="text-[10px] font-semibold">
-                      {prodMode ? 'PROD MODE' : 'DEV MODE'}
-                    </span>
-                  </button>
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowRunAllDropdown(!showRunAllDropdown)}
+                      disabled={isProcessing}
+                      className="flex items-center gap-1.5 px-2 py-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-md text-[10px] font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all disabled:opacity-50"
+                    >
+                      {isProcessing ? (
+                        <>
+                          <svg className="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          <Play className="w-3 h-3" />
+                          RUN ALL
+                          <ChevronDown className="w-3 h-3" />
+                        </>
+                      )}
+                    </button>
+                    
+                    {showRunAllDropdown && !isProcessing && (
+                      <div className="absolute right-0 mt-2 w-64 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50">
+                        <button
+                          onClick={() => handleRunAll(false)}
+                          className="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors rounded-t-lg"
+                        >
+                          <div className="text-sm font-medium text-white">Run All in Production Mode</div>
+                          <div className="text-xs text-gray-400 mt-1">Uses AI/RAG for intelligent mapping</div>
+                        </button>
+                        <button
+                          onClick={() => handleRunAll(true)}
+                          className="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors rounded-b-lg border-t border-gray-700"
+                        >
+                          <div className="text-sm font-medium text-white">Run All in Heuristic Mode</div>
+                          <div className="text-xs text-gray-400 mt-1">Uses heuristic-only mapping</div>
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-1">
