@@ -4,6 +4,7 @@ import AppLayout from './components/AppLayout';
 import DashboardPage from './components/DashboardPage';
 import DataLineagePage from './components/DataLineagePage';
 import ConnectionsPage from './components/ConnectionsPage';
+import XAOPage from './components/xAOPage';
 import LegacyDCLUI from './components/LegacyDCLUI';
 
 function AppContent() {
@@ -18,13 +19,8 @@ function AppContent() {
         return <DataLineagePage />;
       case 'connections':
         return <ConnectionsPage />;
-      case 'agents':
-        return (
-          <div className="text-center py-12">
-            <h1 className="text-3xl font-bold text-white mb-4">Agents</h1>
-            <p className="text-gray-400">Agent management interface coming soon</p>
-          </div>
-        );
+      case 'xao':
+        return <XAOPage />;
       case 'ontology':
         return (
           <div className="text-center py-12">

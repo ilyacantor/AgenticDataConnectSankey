@@ -4,7 +4,7 @@ import AOAFunctionsPanel from './AOAFunctionsPanel';
 import type { xAOMetric } from '../types';
 import aoaMetricsData from '../data/aoaMetrics.json';
 
-export default function xAOPage() {
+export default function XAOPage() {
   const [activeTab, setActiveTab] = useState<'functions' | 'xao' | 'plans'>('functions');
   const [xaoMetrics] = useState<xAOMetric[]>(aoaMetricsData.xaoFunctions as xAOMetric[]);
 
