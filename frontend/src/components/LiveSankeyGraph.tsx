@@ -334,6 +334,24 @@ function renderSankey(
 
   const nodeGroups = svg.append('g').selectAll('g').data(nodes).join('g');
 
+  // Create tooltip element
+  const tooltip = d3.select('body')
+    .selectAll('.sankey-tooltip')
+    .data([null])
+    .join('div')
+    .attr('class', 'sankey-tooltip')
+    .style('position', 'absolute')
+    .style('background', 'rgba(15, 23, 42, 0.95)')
+    .style('color', '#e2e8f0')
+    .style('padding', '8px 12px')
+    .style('border-radius', '6px')
+    .style('border', '1px solid #475569')
+    .style('font-size', '12px')
+    .style('pointer-events', 'none')
+    .style('opacity', 0)
+    .style('z-index', 1000)
+    .style('box-shadow', '0 4px 6px rgba(0, 0, 0, 0.3)');
+
   nodeGroups
     .append('rect')
     .attr('x', (d: any) => {
@@ -371,7 +389,52 @@ function renderSankey(
       return '#64748b';
     })
     .attr('fill-opacity', 0.7)
-    .style('cursor', 'pointer');
+    .style('cursor', 'pointer')
+    .on('mouseenter', function(event: MouseEvent, d: any) {
+      const nodeData = sankeyNodes.find(n => n.name === d.name);
+      if (!nodeData) return;
+      
+      d3.select(this).attr('fill-opacity', 1);
+      
+      let tooltipContent = `<strong>${d.name}</strong><br/>`;
+      tooltipContent += `Type: ${nodeData.type}`;
+      
+      if (nodeData.type === 'source' || nodeData.type === 'source_parent') {
+        tooltipContent += `<br/>System: ${nodeData.sourceSystem || 'Unknown'}`;
+      }
+      
+      tooltip
+        .html(tooltipContent)
+        .style('opacity', 1)
+        .style('left', (event.pageX + 10) + 'px')
+        .style('top', (event.pageY - 10) + 'px');
+    })
+    .on('mousemove', function(event: MouseEvent) {
+      tooltip
+        .style('left', (event.pageX + 10) + 'px')
+        .style('top', (event.pageY - 10) + 'px');
+    })
+    .on('mouseleave', function() {
+      d3.select(this).attr('fill-opacity', 0.7);
+      tooltip.style('opacity', 0);
+    })
+    .on('click', async function(_event: MouseEvent, d: any) {
+      const nodeData = sankeyNodes.find(n => n.name === d.name);
+      if (!nodeData) return;
+      
+      try {
+        const response = await fetch(`/preview?node=${nodeData.id}`);
+        const data = await response.json();
+        console.log('Preview data for', nodeData.id, ':', data);
+        
+        // Dispatch custom event with preview data
+        window.dispatchEvent(new CustomEvent('sankey-node-click', { 
+          detail: { node: nodeData, preview: data } 
+        }));
+      } catch (error) {
+        console.error('Error fetching preview:', error);
+      }
+    });
 
   nodeGroups.each(function (this: any, d: any) {
     const nodeData = sankeyNodes.find(n => n.name === d.name);

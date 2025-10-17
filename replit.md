@@ -18,23 +18,27 @@ The project aims to provide a dynamic data connection layer, aligning diverse da
   - xAO Navigation: Simplified label to "xAO" (left-aligned) for cleaner UI
   - xAO Page: Removed AOA Functions and Live Plans tabs, streamlined to show only xAO Metrics
   - AOA Status Card: Removed "View Details" button for cleaner interface
-- **DCL Graph Container Updates**:
-  - Removed Agent Consumers column (simplified from 3-column to 2-column layout)
-  - Added Prod Mode toggle in Intelligence Engine box (calls /toggle_dev_mode API via GET)
-  - Added "Run All" dropdown with Production/Heuristic mode options above DCL section
+- **Top Bar Updates**:
+  - Removed Autonomy Mode and UI Mode toggles for cleaner interface
+  - Added prominent "Run All" dropdown button in top bar (emerald green)
     - Production Mode (dev_mode=false): Uses AI/RAG for intelligent semantic validation
     - Heuristic Mode (dev_mode=true): Uses fast deterministic domain-based filtering
     - Connects all 9 data sources: dynamics, salesforce, supabase, mongodb, hubspot, snowflake, sap, netsuite, legacy_sql
     - Maps to all agents: finops_pilot, revops_pilot
+- **DCL Graph Container Updates**:
+  - Removed Agent Consumers column (simplified from 3-column to 2-column layout)
+  - Added Prod Mode toggle in Intelligence Engine box (calls /toggle_dev_mode API via GET)
   - Integrated RAG Learning Engine panel showing retrieved mappings with similarity scores
   - Integrated Narration scroll box with typing animation for real-time event display
-- **State Management**: Created useDCLState hook for centralized /state API polling (5-second intervals)
 - **Sankey Graph Enhancements**:
   - Default view now shows ALL sources connected to ALL agents (no filtering)
   - Improved bounding box constraints to prevent visual bleeding
   - Responsive sizing (400px mobile, 500px tablet, 600px desktop)
+  - Added hover tooltips showing node type, system, and details
+  - Added click handlers to fetch and display preview data for each node
+- **State Management**: Created useDCLState hook for centralized /state API polling (5-second intervals)
 - **Bug Fixes**: Fixed Run All functionality - corrected HTTP method (GET) and source/agent parameters
-- **Build Status**: Clean production build (258.44 kB), zero TypeScript errors, full feature parity with legacy UI
+- **Build Status**: Clean production build (259.28 kB), zero TypeScript errors, full feature parity with legacy UI
 
 ## System Architecture
 
