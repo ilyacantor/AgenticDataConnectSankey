@@ -1,0 +1,64 @@
+modules = ["python-3.10"]
+entrypoint = "app.py"
+
+[env]
+PORT = "8080"
+
+[run]
+args = ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "5000"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 35319
+externalPort = 3001
+
+[[ports]]
+localPort = 35611
+externalPort = 3000
+
+[[ports]]
+localPort = 40415
+externalPort = 4200
+
+[[ports]]
+localPort = 44849
+externalPort = 3002
+
+[deployment]
+deploymentTarget = "vm"
+run = ["sh", "-c", "./start.sh"]
+build = ["pip", "install", "--no-cache-dir", "-r", "requirements.txt"]
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "DCL Web Dashboard"
+
+[[workflows.workflow]]
+name = "DCL Web Dashboard"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "uvicorn app:app --host 0.0.0.0 --port 5000 --reload"
+waitForPort = 5000
+
+[agent]
+expertMode = true
+
+[nix]
+channel = "stable-25_05"
+packages = ["nodejs"]
