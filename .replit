@@ -5,7 +5,7 @@ entrypoint = "app.py"
 PORT = "8080"
 
 [run]
-command = "uvicorn app:app --host 0.0.0.0 --port 8080"
+args = ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "5000"]
 
 [[ports]]
 localPort = 5000
