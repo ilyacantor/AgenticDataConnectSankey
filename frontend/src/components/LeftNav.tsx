@@ -18,7 +18,7 @@ export default function LeftNav({ isCollapsed, currentPage, onNavigate }: LeftNa
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
     { id: 'lineage', label: 'Data Lineage', icon: <GitBranch className="w-5 h-5" /> },
     { id: 'connections', label: 'Connections', icon: <Cable className="w-5 h-5" /> },
-    { id: 'agents', label: 'Agents', icon: <Bot className="w-5 h-5" /> },
+    { id: 'xao', label: 'Cross-Agentic Orchestration (xAO)', icon: <Bot className="w-5 h-5" /> },
     { id: 'ontology', label: 'Ontology', icon: <Network className="w-5 h-5" /> },
     { id: 'settings', label: 'Settings', icon: <Settings className="w-5 h-5" /> },
   ];
