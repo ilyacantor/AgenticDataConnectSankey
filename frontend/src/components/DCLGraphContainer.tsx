@@ -53,8 +53,7 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
     
     try {
       await fetch('/toggle_dev_mode', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'GET',
       });
     } catch (error) {
       console.error('Error toggling dev mode:', error);
@@ -67,7 +66,9 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
     setIsProcessing(true);
     
     try {
-      const response = await fetch(`/connect?sources=all&agents=all&dev_mode=${devMode}`);
+      const allSources = 'dynamics,salesforce,supabase,mongodb,hubspot,snowflake,sap,netsuite,legacy_sql';
+      const allAgents = 'finops_pilot,revops_pilot';
+      const response = await fetch(`/connect?sources=${allSources}&agents=${allAgents}&dev_mode=${devMode}`);
       await response.json();
     } catch (error) {
       console.error('Error running all:', error);
@@ -111,14 +112,14 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
                   className="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors rounded-t-lg"
                 >
                   <div className="text-sm font-medium text-white">Run All in Production Mode</div>
-                  <div className="text-xs text-gray-400 mt-1">Uses heuristic-only mapping</div>
+                  <div className="text-xs text-gray-400 mt-1">Uses AI/RAG for intelligent mapping</div>
                 </button>
                 <button
                   onClick={() => handleRunAll(true)}
                   className="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors rounded-b-lg border-t border-gray-700"
                 >
                   <div className="text-sm font-medium text-white">Run All in Heuristic Mode</div>
-                  <div className="text-xs text-gray-400 mt-1">Uses AI/RAG for intelligent mapping</div>
+                  <div className="text-xs text-gray-400 mt-1">Uses heuristic-only mapping</div>
                 </button>
               </div>
             )}
