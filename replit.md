@@ -20,6 +20,7 @@ The project aims to provide a dynamic data connection layer, aligning diverse da
   - AOA Status Card: Removed "View Details" button for cleaner interface
 - **Top Bar Updates**:
   - **Autonomy Mode Toggle**: Restored to top bar with all modes (Observe, Recommend, Approve-to-Act, Auto (Guardrails), Federated (xAO))
+  - **Legacy/Modern UI Toggle**: Restored to top bar for switching between modern Bolt v2 UI and legacy static DCL UI
 - **Dashboard Components**:
   - **Active Agent Performance Monitor**: Fully restored showing agent status, executions/hr, CPU, and memory usage
 - **DCL Graph Container Updates**:

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Search, Bell, ChevronDown } from 'lucide-react';
 import AutonomyModeToggle from './AutonomyModeToggle';
+import LegacyToggle from './LegacyToggle';
 import type { User, PersonaType } from '../types';
 
 interface TopBarProps {
@@ -29,6 +30,7 @@ export default function TopBar({ user, onPersonaChange }: TopBarProps) {
 
       <div className="flex items-center gap-3">
         <AutonomyModeToggle />
+        <LegacyToggle />
       </div>
 
       <div className="relative">
