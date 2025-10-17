@@ -5,7 +5,7 @@ import type { AOAState, AOAStatus } from '../types';
 import aoaMetricsData from '../data/aoaMetrics.json';
 
 export default function AOAStatusCard() {
-  const { autonomyMode, setIsModalOpen } = useAutonomy();
+  const { autonomyMode } = useAutonomy();
   const [aoaStatus, setAoaStatus] = useState<AOAStatus>({
     state: 'Active',
     vitals: {
@@ -164,13 +164,6 @@ export default function AOAStatusCard() {
           </div>
         </div>
       </div>
-
-      <button
-        onClick={() => setIsModalOpen(true)}
-        className="w-full py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-medium rounded-lg transition-colors"
-      >
-        View Details
-      </button>
 
       {aoaStatus.state === 'Executing' && (
         <div className="absolute bottom-0 left-0 w-full h-1 bg-slate-700 overflow-hidden">

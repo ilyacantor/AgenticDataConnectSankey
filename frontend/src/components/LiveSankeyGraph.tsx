@@ -168,30 +168,11 @@ function renderSankey(
     }
   });
 
-  const consumedOntologyIds = new Set<string>();
-  state.graph.edges.forEach(e => {
-    const sourceType = state.graph.nodes.find(n => n.id === e.source)?.type;
-    const targetType = state.graph.nodes.find(n => n.id === e.target)?.type;
-
-    if (sourceType === 'ontology' && targetType === 'agent') {
-      consumedOntologyIds.add(e.source);
-    }
-  });
-
-  const usefulSourceIds = new Set<string>();
-  state.graph.edges.forEach(e => {
-    const sourceType = state.graph.nodes.find(n => n.id === e.source)?.type;
-    const targetType = state.graph.nodes.find(n => n.id === e.target)?.type;
-
-    if (sourceType === 'source' && targetType === 'ontology' && consumedOntologyIds.has(e.target)) {
-      usefulSourceIds.add(e.source);
-    }
-  });
-
+  // Show ALL sources - no filtering
   Object.keys(sourceGroups).forEach(sourceSystem => {
-    const usefulTables = sourceGroups[sourceSystem].filter(table => usefulSourceIds.has(table.id));
+    const allTables = sourceGroups[sourceSystem];
 
-    if (usefulTables.length > 0) {
+    if (allTables.length > 0) {
       const parentNodeName = sourceSystem.replace(/_/g, ' ').toLowerCase();
       const parentNodeId = `parent_${sourceSystem}`;
       nodeIndexMap[parentNodeId] = nodeIndex;
@@ -203,7 +184,7 @@ function renderSankey(
       });
       nodeIndex++;
 
-      usefulTables.forEach(table => {
+      allTables.forEach(table => {
         nodeIndexMap[table.id] = nodeIndex;
         const sourceNode = state.graph.nodes.find(n => n.id === table.id);
         sankeyNodes.push({
@@ -224,12 +205,11 @@ function renderSankey(
     }
   });
 
+  // Show ALL ontology nodes - no filtering
   ontologyNodes.forEach(n => {
-    if (consumedOntologyIds.has(n.id)) {
-      nodeIndexMap[n.id] = nodeIndex;
-      sankeyNodes.push({ name: n.label, type: n.type, id: n.id });
-      nodeIndex++;
-    }
+    nodeIndexMap[n.id] = nodeIndex;
+    sankeyNodes.push({ name: n.label, type: n.type, id: n.id });
+    nodeIndex++;
   });
 
   otherNodes.forEach(n => {
@@ -238,22 +218,17 @@ function renderSankey(
     nodeIndex++;
   });
 
+  // Add ALL edges - no filtering
   state.graph.edges.forEach(e => {
     const sourceType = state.graph.nodes.find(n => n.id === e.source)?.type;
     const targetType = state.graph.nodes.find(n => n.id === e.target)?.type;
 
+    // Skip source-to-source edges
     if (sourceType === 'source' && targetType === 'source') {
       return;
     }
 
-    if (sourceType === 'source' && targetType === 'ontology' && !consumedOntologyIds.has(e.target)) {
-      return;
-    }
-
-    if (sourceType === 'ontology' && targetType === 'agent' && !consumedOntologyIds.has(e.source)) {
-      return;
-    }
-
+    // Add edge if both nodes exist in the Sankey
     if (nodeIndexMap[e.source] !== undefined && nodeIndexMap[e.target] !== undefined) {
       const sourceNode = state.graph.nodes.find(n => n.id === e.source);
       let linkSourceSystem = null;

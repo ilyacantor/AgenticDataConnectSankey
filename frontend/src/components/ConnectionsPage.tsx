@@ -1,119 +1,89 @@
-import { useState } from 'react';
-import { Play, Pause, Settings, FileText, Plus } from 'lucide-react';
-import type { Connection } from '../types';
-import { mockConnections } from '../mocks/data';
+import { Database, Server, Warehouse, Users, Settings2 } from 'lucide-react';
 
-function getConnectionIcon(type: string) {
-  const iconMap: Record<string, string> = {
-    salesforce: '☁️',
-    snowflake: '❄️',
-    netsuite: '🏢',
-    aws: '📦',
-    other: '🔗',
-  };
-  return iconMap[type] || '🔗';
+interface Connection {
+  id: string;
+  name: string;
+  value: string;
+  type: 'CRM' | 'ERP' | 'Database' | 'Warehouse';
+  status: 'connected';
+  description: string;
+}
+
+const connections: Connection[] = [
+  { id: '1', name: 'Dynamics CRM', value: 'dynamics', type: 'CRM', status: 'connected', description: 'Customer relationship management' },
+  { id: '2', name: 'Salesforce', value: 'salesforce', type: 'CRM', status: 'connected', description: 'Cloud-based CRM platform' },
+  { id: '3', name: 'HubSpot', value: 'hubspot', type: 'CRM', status: 'connected', description: 'Marketing and sales platform' },
+  { id: '4', name: 'SAP ERP', value: 'sap', type: 'ERP', status: 'connected', description: 'Enterprise resource planning' },
+  { id: '5', name: 'NetSuite', value: 'netsuite', type: 'ERP', status: 'connected', description: 'Cloud ERP system' },
+  { id: '6', name: 'Legacy SQL', value: 'legacy_sql', type: 'Database', status: 'connected', description: 'On-premise SQL database' },
+  { id: '7', name: 'Snowflake', value: 'snowflake', type: 'Warehouse', status: 'connected', description: 'Cloud data warehouse' },
+  { id: '8', name: 'Supabase', value: 'supabase', type: 'Database', status: 'connected', description: 'Open source database platform' },
+  { id: '9', name: 'MongoDB', value: 'mongodb', type: 'Database', status: 'connected', description: 'NoSQL document database' },
+];
+
+function getIcon(type: string) {
+  switch (type) {
+    case 'CRM':
+      return <Users className="w-6 h-6 text-blue-400" />;
+    case 'ERP':
+      return <Settings2 className="w-6 h-6 text-green-400" />;
+    case 'Database':
+      return <Database className="w-6 h-6 text-red-400" />;
+    case 'Warehouse':
+      return <Warehouse className="w-6 h-6 text-cyan-400" />;
+    default:
+      return <Server className="w-6 h-6 text-gray-400" />;
+  }
+}
+
+function getTypeColor(type: string) {
+  switch (type) {
+    case 'CRM':
+      return 'bg-blue-900/30 border-blue-700/50 hover:border-blue-600';
+    case 'ERP':
+      return 'bg-green-900/30 border-green-700/50 hover:border-green-600';
+    case 'Database':
+      return 'bg-red-900/30 border-red-700/50 hover:border-red-600';
+    case 'Warehouse':
+      return 'bg-cyan-900/30 border-cyan-700/50 hover:border-cyan-600';
+    default:
+      return 'bg-gray-900/30 border-gray-700/50 hover:border-gray-600';
+  }
 }
 
 export default function ConnectionsPage() {
-  const [connections, setConnections] = useState<Connection[]>(mockConnections);
-
-  const togglePause = (id: string) => {
-    setConnections((prev) =>
-      prev.map((conn) =>
-        conn.id === id ? { ...conn, isPaused: !conn.isPaused } : conn
-      )
-    );
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'connected':
-        return 'bg-green-500';
-      case 'syncing':
-        return 'bg-blue-500 animate-pulse';
-      case 'disconnected':
-        return 'bg-red-500';
-      default:
-        return 'bg-gray-500';
-    }
-  };
-
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Connections</h1>
+        <h1 className="text-3xl font-bold text-white mb-2">Data Connections</h1>
         <p className="text-gray-400">
-          Manage data source connections and synchronization settings
+          Manage your enterprise data source connections
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {connections.map((connection) => (
           <div
             key={connection.id}
-            className="bg-gray-900 rounded-xl border border-gray-800 p-6 hover:border-blue-500/50 transition-all"
+            className={`rounded-lg border p-4 transition-all cursor-pointer ${getTypeColor(
+              connection.type
+            )}`}
           >
-            <div className="flex items-start justify-between mb-4">
+            <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
-                <div className="text-4xl">{getConnectionIcon(connection.type)}</div>
+                {getIcon(connection.type)}
                 <div>
-                  <h3 className="text-lg font-semibold text-white">{connection.name}</h3>
-                  <div className="flex items-center gap-2 mt-1">
-                    <div className={`w-2 h-2 rounded-full ${getStatusColor(connection.status)}`} />
-                    <span className="text-xs text-gray-500 capitalize">{connection.status}</span>
-                  </div>
+                  <h3 className="text-base font-semibold text-white">{connection.name}</h3>
+                  <p className="text-xs text-gray-500 uppercase font-semibold">{connection.type}</p>
                 </div>
               </div>
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-400 border border-green-500/30">
+                {connection.status}
+              </span>
             </div>
-
-            <div className="mb-4 pb-4 border-b border-gray-800">
-              <div className="text-xs text-gray-500 mb-1">Last Sync</div>
-              <div className="text-sm text-gray-300">{connection.lastSync}</div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium rounded-lg transition-colors">
-                <Settings className="w-4 h-4" />
-                Configure
-              </button>
-              <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium rounded-lg transition-colors">
-                <FileText className="w-4 h-4" />
-                Logs
-              </button>
-            </div>
-
-            <button
-              onClick={() => togglePause(connection.id)}
-              className={`w-full mt-3 flex items-center justify-center gap-2 px-3 py-2 ${
-                connection.isPaused
-                  ? 'bg-green-600 hover:bg-green-700'
-                  : 'bg-orange-600 hover:bg-orange-700'
-              } text-white text-sm font-medium rounded-lg transition-colors`}
-            >
-              {connection.isPaused ? (
-                <>
-                  <Play className="w-4 h-4" />
-                  Resume Sync
-                </>
-              ) : (
-                <>
-                  <Pause className="w-4 h-4" />
-                  Pause Sync
-                </>
-              )}
-            </button>
+            <p className="text-sm text-gray-400">{connection.description}</p>
           </div>
         ))}
-
-        <button className="bg-gray-900 rounded-xl border-2 border-dashed border-gray-700 hover:border-blue-500 p-6 flex flex-col items-center justify-center gap-4 transition-all min-h-[280px] group">
-          <div className="w-16 h-16 bg-gray-800 group-hover:bg-blue-600 rounded-2xl flex items-center justify-center transition-colors">
-            <Plus className="w-8 h-8 text-gray-600 group-hover:text-white transition-colors" />
-          </div>
-          <div className="text-center">
-            <div className="text-lg font-semibold text-white mb-1">Add New Connection</div>
-            <div className="text-sm text-gray-500">Connect a new data source</div>
-          </div>
-        </button>
       </div>
     </div>
   );
