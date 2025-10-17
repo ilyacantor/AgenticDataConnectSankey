@@ -41,7 +41,10 @@ The project aims to provide a dynamic data connection layer, aligning diverse da
   - Integrated RAG Learning Engine panel showing retrieved mappings with similarity scores
   - Integrated Narration scroll box with typing animation for real-time event display
 - **Sankey Graph Enhancements**:
-  - Default view now shows ALL sources connected to ALL agents (no filtering)
+  - **EXACT LEGACY FILTERING**: Modern UI now uses identical filtering logic as legacy view
+    - Only shows ontology nodes consumed by agents
+    - Only shows source tables that map to consumed ontologies
+    - Filters out edges that don't lead to agents (no orphaned edges like NetSuite)
   - Improved bounding box constraints to prevent visual bleeding
   - Responsive sizing (400px mobile, 500px tablet, 600px desktop)
   - Node hover tooltips showing node type, system, and details

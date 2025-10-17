@@ -168,11 +168,37 @@ function renderSankey(
     }
   });
 
-  // Show ALL sources - no filtering
-  Object.keys(sourceGroups).forEach(sourceSystem => {
-    const allTables = sourceGroups[sourceSystem];
+  // EXACT LEGACY FILTERING LOGIC: First pass - identify which ontology entities are consumed by agents
+  const consumedOntologyIds = new Set<string>();
+  state.graph.edges.forEach(e => {
+    const sourceType = state.graph.nodes.find(n => n.id === e.source)?.type;
+    const targetType = state.graph.nodes.find(n => n.id === e.target)?.type;
+    
+    // If edge is from ontology to agent, mark the ontology entity as consumed
+    if (sourceType === 'ontology' && targetType === 'agent') {
+      consumedOntologyIds.add(e.source);
+    }
+  });
 
-    if (allTables.length > 0) {
+  // Second pass - identify which source nodes have edges to consumed ontology entities
+  const usefulSourceIds = new Set<string>();
+  state.graph.edges.forEach(e => {
+    const sourceType = state.graph.nodes.find(n => n.id === e.source)?.type;
+    const targetType = state.graph.nodes.find(n => n.id === e.target)?.type;
+    
+    // If edge is from source to consumed ontology, mark the source as useful
+    if (sourceType === 'source' && targetType === 'ontology' && consumedOntologyIds.has(e.target)) {
+      usefulSourceIds.add(e.source);
+    }
+  });
+
+  // Only add source nodes that have useful mappings (LEGACY LOGIC)
+  Object.keys(sourceGroups).forEach(sourceSystem => {
+    // Filter to only include tables that have useful mappings
+    const usefulTables = sourceGroups[sourceSystem].filter(table => usefulSourceIds.has(table.id));
+
+    // Only add parent node if there are useful tables
+    if (usefulTables.length > 0) {
       const parentNodeName = sourceSystem.replace(/_/g, ' ').toLowerCase();
       const parentNodeId = `parent_${sourceSystem}`;
       nodeIndexMap[parentNodeId] = nodeIndex;
@@ -184,7 +210,7 @@ function renderSankey(
       });
       nodeIndex++;
 
-      allTables.forEach(table => {
+      usefulTables.forEach(table => {
         nodeIndexMap[table.id] = nodeIndex;
         const sourceNode = state.graph.nodes.find(n => n.id === table.id);
         sankeyNodes.push({
@@ -205,11 +231,13 @@ function renderSankey(
     }
   });
 
-  // Show ALL ontology nodes - no filtering
+  // Only add ontology nodes that are consumed by agents (LEGACY LOGIC)
   ontologyNodes.forEach(n => {
-    nodeIndexMap[n.id] = nodeIndex;
-    sankeyNodes.push({ name: n.label, type: n.type, id: n.id });
-    nodeIndex++;
+    if (consumedOntologyIds.has(n.id)) {
+      nodeIndexMap[n.id] = nodeIndex;
+      sankeyNodes.push({ name: n.label, type: n.type, id: n.id });
+      nodeIndex++;
+    }
   });
 
   otherNodes.forEach(n => {
@@ -218,7 +246,7 @@ function renderSankey(
     nodeIndex++;
   });
 
-  // Add ALL edges - no filtering
+  // Create links from state.graph.edges, filtering out unconsumed paths (LEGACY LOGIC)
   state.graph.edges.forEach(e => {
     const sourceType = state.graph.nodes.find(n => n.id === e.source)?.type;
     const targetType = state.graph.nodes.find(n => n.id === e.target)?.type;
@@ -228,7 +256,17 @@ function renderSankey(
       return;
     }
 
-    // Add edge if both nodes exist in the Sankey
+    // Skip source→ontology edges if the ontology entity isn't consumed by any agent
+    if (sourceType === 'source' && targetType === 'ontology' && !consumedOntologyIds.has(e.target)) {
+      return;
+    }
+
+    // Skip ontology→agent edges if the ontology entity isn't consumed
+    if (sourceType === 'ontology' && targetType === 'agent' && !consumedOntologyIds.has(e.source)) {
+      return;
+    }
+
+    // Create the link if both nodes exist in the Sankey
     if (nodeIndexMap[e.source] !== undefined && nodeIndexMap[e.target] !== undefined) {
       const sourceNode = state.graph.nodes.find(n => n.id === e.source);
       let linkSourceSystem = null;
