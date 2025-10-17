@@ -55,6 +55,20 @@ function NavBar({onSearch}){
           )}
         </div>
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => window.location.href = '/'}
+            className="flex items-center gap-2 px-3 py-1.5 bg-slate-800/50 hover:bg-cyan-600/20 rounded-xl border border-slate-700 hover:border-cyan-600 transition-all group"
+            title="Switch to Modern UI"
+          >
+            <svg className="w-4 h-4 text-slate-400 group-hover:text-cyan-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <div className="text-left">
+              <div className="text-xs text-slate-400 group-hover:text-cyan-400 transition-colors">UI Mode</div>
+              <div className="text-sm font-medium text-slate-200 group-hover:text-white transition-colors">Legacy</div>
+            </div>
+          </button>
+
           <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-800/50 rounded-xl border border-slate-700">
             <span className="text-xs text-slate-400">Prod Mode</span>
             <button 
