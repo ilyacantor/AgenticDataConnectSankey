@@ -188,7 +188,7 @@ function renderSankey(state) {
   const validHeight = height > 0 ? height : responsiveHeight;
 
   const sankey = d3.sankey()
-    .nodeWidth(16)
+    .nodeWidth(2)
     .nodePadding(18)
     .extent([[1, 40], [validWidth - 1, validHeight - 6]]);
 
@@ -381,31 +381,29 @@ function renderSankey(state) {
   nodeGroups
     .append('rect')
     .attr('x', d => {
-      // Calculate max edge width connected to this node
+      // Calculate max edge width connected to this node using the SAME formula as stroke-width
       const connectedLinks = links.filter(l => l.source === d || l.target === d);
       const maxEdgeWidth = connectedLinks.length > 0 
         ? Math.max(...connectedLinks.map(l => Math.min(Math.max(0.5, l.width * 0.5), 20)))
-        : 1;
+        : 0.5;
       
-      // Make node width = max edge width + 2 (1px on each side)
-      const nodeWidth = maxEdgeWidth + 2;
-      const originalWidth = d.x1 - d.x0;
-      const widthDiff = originalWidth - nodeWidth;
+      // Make node width = max edge width + 1 (0.5px on each side)
+      const nodeWidth = maxEdgeWidth + 1;
       
-      // Center the node by adjusting x position
-      return d.x0 + widthDiff / 2;
+      // Center the node on the calculated x position
+      return d.x0 + (d.x1 - d.x0) / 2 - nodeWidth / 2;
     })
     .attr('y', d => d.y0)
     .attr('height', d => d.y1 - d.y0)
     .attr('width', d => {
-      // Calculate max edge width connected to this node
+      // Calculate max edge width connected to this node using the SAME formula as stroke-width
       const connectedLinks = links.filter(l => l.source === d || l.target === d);
       const maxEdgeWidth = connectedLinks.length > 0 
         ? Math.max(...connectedLinks.map(l => Math.min(Math.max(0.5, l.width * 0.5), 20)))
-        : 1;
+        : 0.5;
       
-      // Make node width = max edge width + 2 (1px on each side)
-      return maxEdgeWidth + 2;
+      // Make node width = max edge width + 1 (0.5px on each side)
+      return maxEdgeWidth + 1;
     })
     .attr('fill', d => {
       const nodeData = sankeyNodes.find(n => n.name === d.name);
@@ -602,18 +600,17 @@ function renderSankey(state) {
     const typeInfo = getSourceTypeInfo(nodeData);
     const group = d3.select(this);
     
-    // Calculate actual node width based on connected edges
+    // Calculate actual node width based on connected edges using the SAME formula
     const connectedLinks = links.filter(l => l.source === d || l.target === d);
     const maxEdgeWidth = connectedLinks.length > 0 
       ? Math.max(...connectedLinks.map(l => Math.min(Math.max(0.5, l.width * 0.5), 20)))
-      : 1;
-    const nodeWidth = maxEdgeWidth + 2;
-    const originalWidth = d.x1 - d.x0;
-    const widthDiff = originalWidth - nodeWidth;
+      : 0.5;
+    const nodeWidth = maxEdgeWidth + 1;
     
     // Calculate adjusted node boundaries
-    const adjustedX0 = d.x0 + widthDiff / 2;
-    const adjustedX1 = adjustedX0 + nodeWidth;
+    const nodeCenterX = d.x0 + (d.x1 - d.x0) / 2;
+    const adjustedX0 = nodeCenterX - nodeWidth / 2;
+    const adjustedX1 = nodeCenterX + nodeWidth / 2;
     
     const textX = isLeft ? adjustedX1 + 6 : adjustedX0 - 6;
     const textY = (d.y1 + d.y0) / 2;
