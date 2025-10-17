@@ -29,7 +29,6 @@ function NavBar({onSearch}){
     { href:'#/ontology', label:'Ontology' },
     { href:'#/uncertain', label:'Edge Cases' },
     { href:'#/agents', label:'Agents' },
-    { href:'#/demo', label:'Demos' },
     { href:'#/faq', label:'FAQ' },
   ];
 
