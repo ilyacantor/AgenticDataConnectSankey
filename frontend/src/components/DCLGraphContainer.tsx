@@ -92,51 +92,51 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
   };
 
   return (
-    <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
+    <div className="bg-gray-900 rounded-xl border border-gray-800 p-3 sm:p-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-white">Data Connection Layer (DCL)</h2>
+        <h2 className="text-lg sm:text-xl font-semibold text-white">Data Connection Layer (DCL)</h2>
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-          <span className="text-sm text-gray-400">Live</span>
+          <span className="text-xs sm:text-sm text-gray-400">Live</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-[1fr_300px] gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-4 lg:gap-6">
         <div className="flex flex-col">
-          <div className="relative w-full bg-gradient-to-br from-blue-900/20 to-purple-900/20 rounded-lg border border-blue-500/30 p-2 backdrop-blur-sm mb-4">
+          <div className="relative w-full bg-gradient-to-br from-blue-900/20 to-purple-900/20 rounded-lg border border-blue-500/30 p-2 sm:p-3 backdrop-blur-sm mb-4">
             <div className="absolute inset-0 bg-blue-500/5 rounded-lg animate-pulse" />
 
-            <div className="relative z-10 flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/50 flex-shrink-0">
-                <Activity className="w-4 h-4 text-white animate-pulse" />
+            <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/50 flex-shrink-0">
+                <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-white animate-pulse" />
               </div>
 
-              <div className="flex-1">
-                <div className="flex items-center justify-between mb-1">
-                  <h3 className="text-xs font-semibold text-white">
+              <div className="flex-1 w-full sm:w-auto">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-2 mb-2 sm:mb-1">
+                  <h3 className="text-xs sm:text-sm font-semibold text-white">
                     Intelligent Mapping & Ontology Engine
                   </h3>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 w-full sm:w-auto">
                     {/* Prod Mode Toggle (matches legacy behavior) */}
                     <button
                       onClick={handleProdModeToggle}
-                      className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-semibold transition-all ${
+                      className={`flex items-center gap-1.5 px-3 sm:px-2 py-2 sm:py-1 rounded-md text-xs sm:text-[10px] font-semibold transition-all flex-1 sm:flex-none justify-center ${
                         prodMode
                           ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg shadow-purple-500/30'
                           : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
                       }`}
                       title={prodMode ? 'Prod Mode ON (AI/RAG)' : 'Prod Mode OFF (Heuristic)'}
                     >
-                      <Zap className="w-3 h-3" />
-                      Prod Mode {prodMode ? 'ON' : 'OFF'}
+                      <Zap className="w-3 h-3 sm:w-3 sm:h-3" />
+                      <span className="whitespace-nowrap">Prod Mode {prodMode ? 'ON' : 'OFF'}</span>
                     </button>
 
                     {/* Run/Reset Dropdown */}
-                    <div className="relative">
+                    <div className="relative flex-1 sm:flex-none">
                       <button
                         onClick={() => setShowRunDropdown(!showRunDropdown)}
                         disabled={isProcessing}
-                        className="flex items-center gap-1.5 px-2 py-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-md text-[10px] font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all disabled:opacity-50"
+                        className="flex items-center gap-1.5 px-3 sm:px-2 py-2 sm:py-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-md text-xs sm:text-[10px] font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all disabled:opacity-50 w-full sm:w-auto justify-center"
                       >
                         {isProcessing ? (
                           <>
@@ -156,19 +156,19 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
                       </button>
 
                       {showRunDropdown && !isProcessing && (
-                        <div className="absolute top-full right-0 mt-1 bg-gray-800 border border-gray-700 rounded-md shadow-lg overflow-hidden z-10 min-w-[120px]">
+                        <div className="absolute top-full right-0 mt-1 bg-gray-800 border border-gray-700 rounded-md shadow-lg overflow-hidden z-10 w-full sm:w-auto sm:min-w-[120px]">
                           <button
                             onClick={handleRun}
-                            className="w-full px-3 py-2 text-left text-[11px] text-white hover:bg-emerald-600 transition-colors flex items-center gap-2"
+                            className="w-full px-3 sm:px-3 py-3 sm:py-2 text-left text-xs sm:text-[11px] text-white hover:bg-emerald-600 transition-colors flex items-center gap-2"
                           >
-                            <Play className="w-3 h-3" />
+                            <Play className="w-4 h-4 sm:w-3 sm:h-3" />
                             Run
                           </button>
                           <button
                             onClick={handleReset}
-                            className="w-full px-3 py-2 text-left text-[11px] text-white hover:bg-red-600 transition-colors flex items-center gap-2"
+                            className="w-full px-3 sm:px-3 py-3 sm:py-2 text-left text-xs sm:text-[11px] text-white hover:bg-red-600 transition-colors flex items-center gap-2"
                           >
-                            <RotateCcw className="w-3 h-3" />
+                            <RotateCcw className="w-4 h-4 sm:w-3 sm:h-3" />
                             Reset
                           </button>
                         </div>
@@ -177,14 +177,14 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 text-[10px] text-blue-300">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-[10px] sm:text-[10px] text-blue-300">
                   <div className="flex items-center gap-1">
                     <div className={`w-1.5 h-1.5 rounded-full ${prodMode ? 'bg-purple-400 animate-pulse' : 'bg-gray-500'}`} />
                     <span>{prodMode ? 'AI/RAG Active' : 'Heuristic Mode'}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Activity className="w-3 h-3 text-blue-400" />
-                    <span>9 sources → 2 agents</span>
+                    <span className="whitespace-nowrap">9 sources → 2 agents</span>
                   </div>
                 </div>
               </div>
@@ -364,50 +364,51 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
         </div>
       </div>
 
-      {/* Review Mapping Modal */}
+      {/* Review Mapping Modal - Mobile Friendly */}
       {selectedMapping && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-900 rounded-xl border border-gray-700 max-w-4xl w-full max-h-[90vh] overflow-auto">
-            <div className="sticky top-0 bg-gray-900 border-b border-gray-700 p-6 flex items-center justify-between">
-              <h3 className="text-xl font-semibold text-white">Review Mapping</h3>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
+          <div className="bg-gray-900 rounded-xl border border-gray-700 max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-auto">
+            <div className="sticky top-0 bg-gray-900 border-b border-gray-700 p-4 sm:p-6 flex items-center justify-between">
+              <h3 className="text-lg sm:text-xl font-semibold text-white">Review Mapping</h3>
               <button
                 onClick={() => setSelectedMapping(null)}
-                className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                className="p-2 sm:p-2 hover:bg-gray-800 rounded-lg transition-colors min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 flex items-center justify-center"
+                aria-label="Close modal"
               >
-                <X className="w-5 h-5 text-gray-400" />
+                <X className="w-5 h-5 sm:w-5 sm:h-5 text-gray-400" />
               </button>
             </div>
 
-            <div className="p-6">
-              <div className="grid grid-cols-2 gap-6 mb-6">
+            <div className="p-4 sm:p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
                 <div>
-                  <h4 className="text-sm font-semibold text-gray-400 mb-3 uppercase tracking-wider">
+                  <h4 className="text-xs sm:text-sm font-semibold text-gray-400 mb-2 sm:mb-3 uppercase tracking-wider">
                     Source Data Snippet
                   </h4>
-                  <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                  <div className="bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-700">
                     <pre className="text-xs text-green-400 font-mono overflow-x-auto">
                       {selectedMapping.sourceSample}
                     </pre>
                   </div>
-                  <div className="mt-4">
-                    <div className="text-sm text-gray-400 mb-1">Source Field</div>
-                    <div className="text-base text-blue-400 font-mono">
+                  <div className="mt-3 sm:mt-4">
+                    <div className="text-xs sm:text-sm text-gray-400 mb-1">Source Field</div>
+                    <div className="text-sm sm:text-base text-blue-400 font-mono break-all">
                       {selectedMapping.sourceField}
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="text-sm font-semibold text-gray-400 mb-3 uppercase tracking-wider">
+                  <h4 className="text-xs sm:text-sm font-semibold text-gray-400 mb-2 sm:mb-3 uppercase tracking-wider">
                     Proposed Unified Mapping
                   </h4>
-                  <div className="bg-gray-800 rounded-lg p-4 border border-gray-700 mb-4">
-                    <div className="text-sm text-gray-400 mb-2">Unified Entity & Field</div>
-                    <div className="text-lg text-green-400 font-mono">
+                  <div className="bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-700 mb-3 sm:mb-4">
+                    <div className="text-xs sm:text-sm text-gray-400 mb-2">Unified Entity & Field</div>
+                    <div className="text-base sm:text-lg text-green-400 font-mono break-all">
                       {selectedMapping.unifiedField}
                     </div>
-                    <div className="mt-4 pt-4 border-t border-gray-700">
-                      <div className="text-sm text-gray-400 mb-1">Confidence Score</div>
+                    <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-700">
+                      <div className="text-xs sm:text-sm text-gray-400 mb-1">Confidence Score</div>
                       <div className="flex items-center gap-3">
                         <div className="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
                           <div
@@ -422,45 +423,45 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
                 </div>
               </div>
 
-              <div className="mb-6">
-                <h4 className="text-sm font-semibold text-gray-400 mb-3 uppercase tracking-wider">
+              <div className="mb-4 sm:mb-6">
+                <h4 className="text-xs sm:text-sm font-semibold text-gray-400 mb-2 sm:mb-3 uppercase tracking-wider">
                   LLM Reasoning
                 </h4>
-                <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                  <p className="text-sm text-gray-300 leading-relaxed">
+                <div className="bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-700">
+                  <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
                     {selectedMapping.reasoning}
                   </p>
                 </div>
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                 <button
                   onClick={() => {
                     console.log('Approved:', selectedMapping.id);
                     setSelectedMapping(null);
                   }}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 sm:py-3 bg-green-600 hover:bg-green-700 active:bg-green-800 text-white font-medium rounded-lg transition-colors min-h-[48px] sm:min-h-0"
                 >
                   <CheckCircle className="w-5 h-5" />
-                  Approve
+                  <span className="text-sm sm:text-base">Approve</span>
                 </button>
                 <button
                   onClick={() => {
                     console.log('Editing:', selectedMapping.id);
                   }}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 sm:py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium rounded-lg transition-colors min-h-[48px] sm:min-h-0"
                 >
-                  Edit Mapping
+                  <span className="text-sm sm:text-base">Edit Mapping</span>
                 </button>
                 <button
                   onClick={() => {
                     console.log('Ignored:', selectedMapping.id);
                     setSelectedMapping(null);
                   }}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 sm:py-3 bg-gray-700 hover:bg-gray-600 active:bg-gray-800 text-white font-medium rounded-lg transition-colors min-h-[48px] sm:min-h-0"
                 >
                   <X className="w-5 h-5" />
-                  Ignore & Flag
+                  <span className="text-sm sm:text-base">Ignore & Flag</span>
                 </button>
               </div>
             </div>
