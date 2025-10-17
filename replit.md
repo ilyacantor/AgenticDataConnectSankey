@@ -12,6 +12,25 @@ The project aims to provide a dynamic data connection layer, aligning diverse da
 - **Model**: `gemini-2.5-pro` (not `gemini-pro` which is retired)
 - **Design Constraint**: Preserve existing GUI, add new features as separate sections
 
+## Recent Changes (October 17, 2025)
+- **Modern UI Integration**: Successfully integrated all legacy DCL functionality into Bolt v2 UI
+  - Connections Page: Now displays actual data sources (Dynamics, Salesforce, SAP, NetSuite, Snowflake, Supabase, MongoDB, Legacy SQL, HubSpot)
+  - xAO Navigation: Simplified label to "xAO" (left-aligned) for cleaner UI
+  - xAO Page: Removed AOA Functions and Live Plans tabs, streamlined to show only xAO Metrics
+  - AOA Status Card: Removed "View Details" button for cleaner interface
+- **DCL Graph Container Updates**:
+  - Removed Agent Consumers column (simplified from 3-column to 2-column layout)
+  - Added Prod Mode toggle in Intelligence Engine box (calls /toggle_dev_mode API)
+  - Added "Run All" dropdown with Production/Heuristic mode options above DCL section
+  - Integrated RAG Learning Engine panel showing retrieved mappings with similarity scores
+  - Integrated Narration scroll box with typing animation for real-time event display
+- **State Management**: Created useDCLState hook for centralized /state API polling (5-second intervals)
+- **Sankey Graph Enhancements**:
+  - Default view now shows ALL sources connected to ALL agents (no filtering)
+  - Improved bounding box constraints to prevent visual bleeding
+  - Responsive sizing (400px mobile, 500px tablet, 600px desktop)
+- **Build Status**: Clean production build (258.38 kB), zero TypeScript errors, full feature parity with legacy UI
+
 ## System Architecture
 
 ### Production Mode (Prod Mode Toggle)
