@@ -324,6 +324,53 @@ function renderSankey(
 
   const { nodes, links } = graph;
 
+  // EXACT LEGACY POSITIONING LOGIC: Distribute ontology nodes evenly across vertical space
+  const ontologyNodesInSankey = nodes.filter(n => {
+    const nodeData = sankeyNodes.find(sn => sn.name === n.name);
+    return nodeData && nodeData.type === 'ontology';
+  });
+  
+  if (ontologyNodesInSankey.length > 1) {
+    const totalOntologyHeight = ontologyNodesInSankey.reduce((sum, n) => sum + (n.y1! - n.y0!), 0);
+    const availableSpace = validHeight - totalOntologyHeight - 80; // Leave margin
+    const spacing = availableSpace / (ontologyNodesInSankey.length - 1);
+    
+    let currentY = 40; // Start with top margin
+    ontologyNodesInSankey.forEach(node => {
+      const nodeHeight = node.y1! - node.y0!;
+      node.y0 = currentY;
+      node.y1 = currentY + nodeHeight;
+      currentY += nodeHeight + spacing;
+    });
+    
+    sankey.update(graph);
+  }
+
+  // EXACT LEGACY POSITIONING LOGIC: Manually center agent nodes vertically
+  const agentNodesInSankey = nodes.filter(n => {
+    const nodeData = sankeyNodes.find(sn => sn.name === n.name);
+    return nodeData && nodeData.type === 'agent';
+  });
+  
+  if (agentNodesInSankey.length > 0) {
+    // Calculate total height of all agent nodes including padding
+    const totalAgentHeight = agentNodesInSankey.reduce((sum, n) => sum + (n.y1! - n.y0!), 0);
+    const totalPadding = (agentNodesInSankey.length - 1) * 2; // 2px padding between agents
+    const centerY = (validHeight - totalAgentHeight - totalPadding) / 2;
+    
+    // Reposition agents to be centered
+    let currentY = centerY;
+    agentNodesInSankey.forEach(node => {
+      const nodeHeight = node.y1! - node.y0!;
+      node.y0 = currentY;
+      node.y1 = currentY + nodeHeight;
+      currentY += nodeHeight + 2; // 2px padding
+    });
+    
+    // Update the sankey link generator to use the new positions
+    sankey.update(graph);
+  }
+
   const sourceColorMap: Record<string, { parent: string; child: string }> = {
     dynamics: { parent: '#3b82f6', child: '#60a5fa' },
     salesforce: { parent: '#8b5cf6', child: '#a78bfa' },

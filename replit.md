@@ -45,6 +45,11 @@ The project aims to provide a dynamic data connection layer, aligning diverse da
     - Only shows ontology nodes consumed by agents
     - Only shows source tables that map to consumed ontologies
     - Filters out edges that don't lead to agents (no orphaned edges like NetSuite)
+  - **EXACT LEGACY POSITIONING**: Modern UI now uses identical node positioning as legacy view
+    - Distributes ontology nodes evenly across vertical space with deterministic spacing
+    - Centers agent nodes vertically with 2px padding
+    - Calls sankey.update(graph) after repositioning to lock node positions
+    - Prevents d3-sankey from re-sorting nodes with different heuristics
   - Improved bounding box constraints to prevent visual bleeding
   - Responsive sizing (400px mobile, 500px tablet, 600px desktop)
   - Node hover tooltips showing node type, system, and details
