@@ -38,7 +38,7 @@ The project aims to provide a dynamic data connection layer, aligning diverse da
     - Detailed review modal showing source data snippet, proposed unified mapping, confidence score, and LLM reasoning
     - Action buttons: Approve, Edit Mapping, Ignore & Flag
     - Schema Log tab showing schema changes with change type indicators
-  - Integrated RAG Learning Engine panel showing retrieved mappings with similarity scores
+  - **RAG Learning Engine**: EXACT legacy layout displaying source_field, similarity%, ontology_entity, and context directly from backend /state
   - Integrated Narration scroll box with typing animation for real-time event display
 - **Sankey Graph Enhancements**:
   - **EXACT LEGACY FILTERING**: Modern UI now uses identical filtering logic as legacy view

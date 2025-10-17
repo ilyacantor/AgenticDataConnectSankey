@@ -291,39 +291,46 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
             </div>
           </div>
 
-          {/* RAG Learning Engine */}
-          <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4 flex-1">
+          {/* RAG Learning Engine - EXACT LEGACY LAYOUT */}
+          <div className="rounded-lg p-4 bg-gradient-to-br from-teal-950 to-cyan-950 border border-teal-700/30">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-6 rounded-full bg-teal-600 flex items-center justify-center text-white text-xs font-bold">
-                📚
+              <div className="w-6 h-6 rounded-full bg-teal-500 flex items-center justify-center text-white text-xs font-bold">
+                🧠
               </div>
-              <span className="text-white font-bold text-sm">RAG Learning</span>
+              <span className="text-white font-bold text-sm">RAG Learning Engine</span>
               <span className="ml-auto text-xs bg-teal-600 text-white px-2 py-0.5 rounded-full font-bold">
-                {dclState?.rag?.last_retrieval_count || 0} retrieved
+                {dclState?.rag?.total_mappings || 0} stored
               </span>
             </div>
-            <div className="text-xs space-y-2 max-h-[150px] overflow-y-auto">
-              {dclState?.rag?.retrievals?.length === 0 ? (
-                <div className="text-gray-500 italic text-[11px]">
-                  No similar mappings found yet. The RAG engine will learn as you map data.
+            <div className="text-xs space-y-2 max-h-[280px] overflow-y-auto">
+              {!dclState?.rag?.retrievals || dclState.rag.retrievals.length === 0 ? (
+                <div className="text-teal-300/70 italic text-[11px]">
+                  No context retrieved yet. Connect a source to see RAG retrieve historical mappings.
                 </div>
               ) : (
-                dclState?.rag?.retrievals?.map((retrieval: any, idx: number) => {
-                  const similarity = Math.round(retrieval.score * 100);
-                  return (
-                    <div key={idx} className="p-2 bg-gradient-to-r from-teal-950 to-cyan-950 rounded border border-teal-700/50">
-                      <div className="text-[10px] text-teal-300 font-mono mb-1 truncate">
-                        {retrieval.mapping}
+                <>
+                  <div className="text-white font-semibold mb-2 text-[11px]">
+                    Retrieved {dclState.rag.last_retrieval_count} similar mappings:
+                  </div>
+                  {dclState.rag.retrievals.map((ret: any, i: number) => (
+                    <div key={i} className="mb-2">
+                      <div className="flex justify-between items-start mb-1">
+                        <div className="text-white font-semibold text-[11px]">{ret.source_field}</div>
+                        <div className="text-[10px] text-white font-bold">
+                          {(ret.similarity * 100).toFixed(0)}%
+                        </div>
                       </div>
-                      <div className="w-full bg-cyan-950 rounded-sm h-1.5 overflow-hidden">
+                      <div className="text-teal-300 text-[10px] mb-1">→ {ret.ontology_entity}</div>
+                      <div className="w-full bg-slate-900/50 rounded-sm h-1.5 overflow-hidden mb-1">
                         <div
                           className="h-full bg-gradient-to-r from-teal-500 to-cyan-400 transition-all"
-                          style={{ width: `${similarity}%` }}
+                          style={{ width: `${(ret.similarity * 100).toFixed(0)}%` }}
                         />
                       </div>
+                      <div className="text-[9px] text-teal-400/70">{ret.context}</div>
                     </div>
-                  );
-                })
+                  ))}
+                </>
               )}
             </div>
           </div>
