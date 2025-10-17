@@ -1,0 +1,26 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "## Overview The Agentic Data Connection Layer (DCL) is an intelligent system that autonomously discovers and maps data sources from various enterprise systems to a predefined ontology using AI. It validates these mappings through quality checks and automatically publishes them as DuckDB views.",
+  "main": "graph.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ilyacantor/AgenticDataConnectSankey.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ilyacantor/AgenticDataConnectSankey/issues"
+  },
+  "homepage": "https://github.com/ilyacantor/AgenticDataConnectSankey#readme",
+  "dependencies": {
+    "@types/d3": "^7.4.3",
+    "@types/d3-sankey": "^0.12.4",
+    "d3": "^7.9.0",
+    "d3-sankey": "^0.12.3"
+  }
+}
