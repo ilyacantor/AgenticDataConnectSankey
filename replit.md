@@ -19,14 +19,21 @@ The project aims to provide a dynamic data connection layer, aligning diverse da
   - xAO Page: Removed AOA Functions and Live Plans tabs, streamlined to show only xAO Metrics
   - AOA Status Card: Removed "View Details" button for cleaner interface
 - **Top Bar Updates**:
-  - Removed Autonomy Mode, UI Mode, and Run All buttons for cleaner, minimal interface
+  - **Autonomy Mode Toggle**: Restored to top bar with all modes (Observe, Recommend, Approve-to-Act, Auto (Guardrails), Federated (xAO))
+- **Dashboard Components**:
+  - **Active Agent Performance Monitor**: Fully restored showing agent status, executions/hr, CPU, and memory usage
 - **DCL Graph Container Updates**:
   - Removed Agent Consumers column (simplified from 3-column to 2-column layout)
   - Replaced Prod Mode toggle with "Run All" dropdown in Intelligence Engine box (emerald green button)
-    - Production Mode (dev_mode=false): Uses AI/RAG for intelligent semantic validation
-    - Heuristic Mode (dev_mode=true): Uses fast deterministic domain-based filtering
+    - **Production Mode (dev_mode=true)**: Uses AI/RAG for intelligent semantic validation  
+    - **Heuristic Mode (dev_mode=false)**: Uses fast deterministic domain-based filtering
     - Connects all 9 data sources: dynamics, salesforce, supabase, mongodb, hubspot, snowflake, sap, netsuite, legacy_sql
     - Maps to all agents: finops_pilot, revops_pilot
+  - **Intelligence Review Panel**: Full functionality restored
+    - "Review" button on each mapping item
+    - Detailed review modal showing source data snippet, proposed unified mapping, confidence score, and LLM reasoning
+    - Action buttons: Approve, Edit Mapping, Ignore & Flag
+    - Schema Log tab showing schema changes with change type indicators
   - Integrated RAG Learning Engine panel showing retrieved mappings with similarity scores
   - Integrated Narration scroll box with typing animation for real-time event display
 - **Sankey Graph Enhancements**:
@@ -40,8 +47,8 @@ The project aims to provide a dynamic data connection layer, aligning diverse da
     - Field Mappings for table→ontology connections (source field → ontology field with confidence)
     - Entity Fields for ontology→agent connections
 - **State Management**: Created useDCLState hook for centralized /state API polling (5-second intervals)
-- **Bug Fixes**: Fixed Run All functionality - corrected HTTP method (GET) and source/agent parameters
-- **Build Status**: Clean production build (260.04 kB), zero TypeScript errors, full feature parity with legacy UI
+- **Bug Fixes**: Fixed Run All mode reversal - Production Mode now correctly triggers AI/RAG (dev_mode=true), Heuristic Mode triggers deterministic filtering (dev_mode=false)
+- **Build Status**: Clean production build (268.36 kB), zero TypeScript errors, all features fully restored
 
 ## System Architecture
 

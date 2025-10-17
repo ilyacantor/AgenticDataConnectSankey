@@ -2,11 +2,13 @@ import AOAStatusCard from './AOAStatusCard';
 import AOADetailsModal from './AOADetailsModal';
 import AOAFunctionsPanel from './AOAFunctionsPanel';
 import DCLGraphContainer from './DCLGraphContainer';
+import AgentPerformanceMonitor from './AgentPerformanceMonitor';
 import {
   mockAgentNodes,
   mockDCLStats,
   mockMappingReviews,
   mockSchemaChanges,
+  mockAgentPerformance,
 } from '../mocks/data';
 
 export default function DashboardPage() {
@@ -22,6 +24,8 @@ export default function DashboardPage() {
       <AOAStatusCard />
       
       <AOAFunctionsPanel />
+      
+      <AgentPerformanceMonitor agents={mockAgentPerformance} />
 
       <DCLGraphContainer
         agents={mockAgentNodes}
