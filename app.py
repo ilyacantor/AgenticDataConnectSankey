@@ -1051,56 +1051,44 @@ def state():
     })
 
 @app.get("/connect")
-async def connect(sources: str = Query(...), agents: str = Query(...), dev_mode: Optional[bool] = Query(None)):
-    global DEV_MODE, SELECTED_AGENTS
+async def connect(sources: str = Query(...), agents: str = Query(...)):
+    global SELECTED_AGENTS
     
-    # Temporarily set dev_mode if provided
-    original_dev_mode = DEV_MODE
-    if dev_mode is not None:
-        DEV_MODE = dev_mode
-        mode_name = "Production Mode (AI/RAG)" if DEV_MODE else "Heuristic Mode"
-        log(f"🔧 Running in {mode_name}")
+    source_list = [s.strip() for s in sources.split(',') if s.strip()]
+    agent_list = [a.strip() for a in agents.split(',') if a.strip()]
     
-    try:
-        source_list = [s.strip() for s in sources.split(',') if s.strip()]
-        agent_list = [a.strip() for a in agents.split(',') if a.strip()]
-        
-        if not source_list:
-            return JSONResponse({"error": "No sources provided"}, status_code=400)
-        if not agent_list:
-            return JSONResponse({"error": "No agents provided"}, status_code=400)
-        
-        # Store selected agents globally
-        SELECTED_AGENTS = agent_list
-        
-        # Filter out sources that are already connected
-        new_sources = [s for s in source_list if s not in SOURCES_ADDED]
-        
-        if new_sources:
-            try:
-                # Connect sources in parallel using asyncio
-                tasks = [asyncio.to_thread(connect_source, source) for source in new_sources]
-                results = await asyncio.gather(*tasks, return_exceptions=True)
-                
-                # Check for any errors in the results
-                errors = []
-                for i, result in enumerate(results):
-                    if isinstance(result, Exception):
-                        error_msg = f"{new_sources[i]}: {str(result)}"
-                        errors.append(error_msg)
-                        log(f"❌ Error connecting {new_sources[i]}: {str(result)}")
-                
-                if errors:
-                    log(f"⚠️ Some sources failed to connect: {'; '.join(errors)}")
-            except Exception as e:
-                log(f"❌ Connection error: {str(e)}")
-                return JSONResponse({"error": str(e)}, status_code=500)
-        
-        return JSONResponse({"ok": True, "sources": SOURCES_ADDED, "agents": agent_list})
-    finally:
-        # Always restore original dev_mode
-        if dev_mode is not None:
-            DEV_MODE = original_dev_mode
+    if not source_list:
+        return JSONResponse({"error": "No sources provided"}, status_code=400)
+    if not agent_list:
+        return JSONResponse({"error": "No agents provided"}, status_code=400)
+    
+    # Store selected agents globally
+    SELECTED_AGENTS = agent_list
+    
+    # Filter out sources that are already connected
+    new_sources = [s for s in source_list if s not in SOURCES_ADDED]
+    
+    if new_sources:
+        try:
+            # Connect sources in parallel using asyncio
+            tasks = [asyncio.to_thread(connect_source, source) for source in new_sources]
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            
+            # Check for any errors in the results
+            errors = []
+            for i, result in enumerate(results):
+                if isinstance(result, Exception):
+                    error_msg = f"{new_sources[i]}: {str(result)}"
+                    errors.append(error_msg)
+                    log(f"❌ Error connecting {new_sources[i]}: {str(result)}")
+            
+            if errors:
+                log(f"⚠️ Some sources failed to connect: {'; '.join(errors)}")
+        except Exception as e:
+            log(f"❌ Connection error: {str(e)}")
+            return JSONResponse({"error": str(e)}, status_code=500)
+    
+    return JSONResponse({"ok": True, "sources": SOURCES_ADDED, "agents": agent_list})
 
 @app.get("/reset")
 def reset():

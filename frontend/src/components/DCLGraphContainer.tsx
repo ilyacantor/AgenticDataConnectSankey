@@ -1,4 +1,4 @@
-import { Activity, Zap, AlertCircle, Clock, TrendingUp, AlertTriangle, ChevronDown, Play, X, CheckCircle } from 'lucide-react';
+import { Activity, Zap, AlertCircle, Clock, TrendingUp, AlertTriangle, ChevronDown, Play, X, CheckCircle, RotateCcw } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import type { AgentNode, DCLStats, MappingReview, SchemaChange } from '../types';
 import LiveSankeyGraph from './LiveSankeyGraph';
@@ -15,16 +15,21 @@ interface DCLGraphContainerProps {
 export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DCLGraphContainerProps) {
   const [activeTab, setActiveTab] = useState<'review' | 'schema'>('review');
   const [prodMode, setProdMode] = useState(false);
-  const [showRunAllDropdown, setShowRunAllDropdown] = useState(false);
+  const [showRunDropdown, setShowRunDropdown] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedMapping, setSelectedMapping] = useState<MappingReview | null>(null);
   const { state: dclState } = useDCLState();
   const [typingEvents, setTypingEvents] = useState<Array<{ text: string; isTyping: boolean; key: string }>>([]);
 
-  // Sync prod mode from backend state
+  // All data sources (default selection - matches legacy)
+  const allSources = 'dynamics,salesforce,hubspot,sap,netsuite,legacy_sql,snowflake,supabase,mongodb';
+  // All agents (default selection - matches legacy)
+  const allAgents = 'revops_pilot,finops_pilot';
+
+  // Sync prod mode from backend state (dev_mode in backend, but shown as Prod Mode in UI)
   useEffect(() => {
     if (dclState) {
-      setProdMode(!dclState.dev_mode);
+      setProdMode(dclState.dev_mode || false);
     }
   }, [dclState?.dev_mode]);
 
@@ -48,33 +53,41 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
     }
   }, [dclState?.events, typingEvents]);
 
+  // Toggle Prod Mode using existing backend endpoint
   const handleProdModeToggle = async () => {
-    const newProdMode = !prodMode;
-    setProdMode(newProdMode);
-    
     try {
       await fetch('/toggle_dev_mode', {
         method: 'GET',
       });
+      // State will update via useDCLState hook
     } catch (error) {
-      console.error('Error toggling dev mode:', error);
-      setProdMode(!newProdMode);
+      console.error('Error toggling prod mode:', error);
     }
   };
 
-  const handleRunAll = async (devMode: boolean) => {
-    setShowRunAllDropdown(false);
+  // Run - calls /connect with all sources and agents (uses current backend prod mode state)
+  const handleRun = async () => {
+    setShowRunDropdown(false);
     setIsProcessing(true);
     
     try {
-      const allSources = 'dynamics,salesforce,supabase,mongodb,hubspot,snowflake,sap,netsuite,legacy_sql';
-      const allAgents = 'finops_pilot,revops_pilot';
-      const response = await fetch(`/connect?sources=${allSources}&agents=${allAgents}&dev_mode=${devMode}`);
+      const response = await fetch(`/connect?sources=${allSources}&agents=${allAgents}`);
       await response.json();
     } catch (error) {
-      console.error('Error running all:', error);
+      console.error('Error running:', error);
     } finally {
       setTimeout(() => setIsProcessing(false), 1500);
+    }
+  };
+
+  // Reset - calls /reset endpoint (matches legacy)
+  const handleReset = async () => {
+    setShowRunDropdown(false);
+    
+    try {
+      await fetch('/reset');
+    } catch (error) {
+      console.error('Error resetting:', error);
     }
   };
 
@@ -103,140 +116,136 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
                   <h3 className="text-xs font-semibold text-white">
                     Intelligent Mapping & Ontology Engine
                   </h3>
-                  <div className="relative">
+                  <div className="flex items-center gap-2">
+                    {/* Prod Mode Toggle (matches legacy behavior) */}
                     <button
-                      onClick={() => setShowRunAllDropdown(!showRunAllDropdown)}
-                      disabled={isProcessing}
-                      className="flex items-center gap-1.5 px-2 py-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-md text-[10px] font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all disabled:opacity-50"
+                      onClick={handleProdModeToggle}
+                      className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-semibold transition-all ${
+                        prodMode
+                          ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg shadow-purple-500/30'
+                          : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
+                      }`}
+                      title={prodMode ? 'Prod Mode ON (AI/RAG)' : 'Prod Mode OFF (Heuristic)'}
                     >
-                      {isProcessing ? (
-                        <>
-                          <svg className="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                          Processing...
-                        </>
-                      ) : (
-                        <>
-                          <Play className="w-3 h-3" />
-                          RUN ALL
-                          <ChevronDown className="w-3 h-3" />
-                        </>
-                      )}
+                      <Zap className="w-3 h-3" />
+                      Prod Mode {prodMode ? 'ON' : 'OFF'}
                     </button>
-                    
-                    {showRunAllDropdown && !isProcessing && (
-                      <div className="absolute right-0 mt-2 w-64 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50">
-                        <button
-                          onClick={() => handleRunAll(true)}
-                          className="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors rounded-t-lg"
-                        >
-                          <div className="text-sm font-medium text-white">Run All in Production Mode</div>
-                          <div className="text-xs text-gray-400 mt-1">Uses AI/RAG for intelligent mapping</div>
-                        </button>
-                        <button
-                          onClick={() => handleRunAll(false)}
-                          className="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors rounded-b-lg border-t border-gray-700"
-                        >
-                          <div className="text-sm font-medium text-white">Run All in Heuristic Mode</div>
-                          <div className="text-xs text-gray-400 mt-1">Uses heuristic-only mapping</div>
-                        </button>
-                      </div>
-                    )}
+
+                    {/* Run/Reset Dropdown */}
+                    <div className="relative">
+                      <button
+                        onClick={() => setShowRunDropdown(!showRunDropdown)}
+                        disabled={isProcessing}
+                        className="flex items-center gap-1.5 px-2 py-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-md text-[10px] font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all disabled:opacity-50"
+                      >
+                        {isProcessing ? (
+                          <>
+                            <svg className="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            <Play className="w-3 h-3" />
+                            Actions
+                            <ChevronDown className="w-3 h-3" />
+                          </>
+                        )}
+                      </button>
+
+                      {showRunDropdown && !isProcessing && (
+                        <div className="absolute top-full right-0 mt-1 bg-gray-800 border border-gray-700 rounded-md shadow-lg overflow-hidden z-10 min-w-[120px]">
+                          <button
+                            onClick={handleRun}
+                            className="w-full px-3 py-2 text-left text-[11px] text-white hover:bg-emerald-600 transition-colors flex items-center gap-2"
+                          >
+                            <Play className="w-3 h-3" />
+                            Run
+                          </button>
+                          <button
+                            onClick={handleReset}
+                            className="w-full px-3 py-2 text-left text-[11px] text-white hover:bg-red-600 transition-colors flex items-center gap-2"
+                          >
+                            <RotateCcw className="w-3 h-3" />
+                            Reset
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+
+                <div className="flex items-center gap-4 text-[10px] text-blue-300">
                   <div className="flex items-center gap-1">
-                    <Zap className="w-2 h-2 text-yellow-400" />
-                    <span className="text-[9px] text-gray-400">LLM:</span>
-                    <span className="text-[10px] font-semibold text-white">
-                      {dclState?.llm.calls || stats.llmCallsPerMin}
-                    </span>
+                    <div className={`w-1.5 h-1.5 rounded-full ${prodMode ? 'bg-purple-400 animate-pulse' : 'bg-gray-500'}`} />
+                    <span>{prodMode ? 'AI/RAG Active' : 'Heuristic Mode'}</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <span className="text-[9px] text-gray-400">Tokens:</span>
-                    <span className="text-[10px] font-semibold text-white">
-                      ~{dclState?.llm.tokens || stats.avgTokenUsage}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-[9px] text-gray-400">RAG:</span>
-                    <span className="text-[10px] font-semibold text-white">
-                      {dclState?.rag.total_mappings || stats.ragIndexSize}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <AlertCircle className="w-2 h-2 text-orange-400" />
-                    <span className="text-[10px] font-semibold text-orange-400">{stats.mappingsInReview}</span>
+                    <Activity className="w-3 h-3 text-blue-400" />
+                    <span>9 sources → 2 agents</span>
                   </div>
                 </div>
               </div>
             </div>
-
-            <div className="absolute top-0 left-1/2 w-px h-4 bg-gradient-to-b from-transparent via-blue-500 to-transparent -translate-x-1/2 -translate-y-4 opacity-50" />
-            <div className="absolute bottom-0 left-1/2 w-px h-4 bg-gradient-to-t from-transparent via-blue-500 to-transparent -translate-x-1/2 translate-y-4 opacity-50" />
           </div>
 
-          <div className="flex-1 w-full min-h-[400px]">
-            <LiveSankeyGraph />
-          </div>
+          <LiveSankeyGraph />
         </div>
 
-        <div className="space-y-4 flex flex-col">
-          <div className="bg-gray-800/50 rounded-lg border border-gray-700 p-4 flex flex-col">
-            <h3 className="text-sm font-semibold text-white mb-3">Intelligence Review & Schema Drift</h3>
+        <div className="flex flex-col gap-4">
+          {/* Intelligence Review Panel */}
+          <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-6 h-6 rounded-full bg-orange-600 flex items-center justify-center text-white text-xs font-bold">
+                🤖
+              </div>
+              <span className="text-white font-bold text-sm">Intelligence Review</span>
+            </div>
 
             <div className="flex gap-2 mb-3">
               <button
                 onClick={() => setActiveTab('review')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                className={`flex-1 px-2 py-1 text-[11px] font-medium rounded transition-colors ${
                   activeTab === 'review'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-700 text-gray-400 hover:text-gray-200'
+                    ? 'bg-orange-600 text-white'
+                    : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
                 }`}
               >
-                Review Required
+                Review ({mappings.length})
               </button>
               <button
                 onClick={() => setActiveTab('schema')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                className={`flex-1 px-2 py-1 text-[11px] font-medium rounded transition-colors ${
                   activeTab === 'schema'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-700 text-gray-400 hover:text-gray-200'
+                    ? 'bg-orange-600 text-white'
+                    : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
                 }`}
               >
-                Schema Log
+                Schema Log ({schemaChanges.length})
               </button>
             </div>
 
-            <div className="flex-1 overflow-auto max-h-[200px]">
+            <div className="text-xs space-y-2 max-h-[200px] overflow-y-auto">
               {activeTab === 'review' ? (
                 <div className="space-y-2">
                   {mappings.slice(0, 3).map((mapping) => (
-                    <div
-                      key={mapping.id}
-                      className="bg-gray-800 rounded-lg p-3 border border-gray-700 hover:border-orange-500/50 transition-colors"
-                    >
-                      <div className="flex items-start justify-between gap-2 mb-2">
+                    <div key={mapping.id} className="p-2 bg-gray-900 rounded border border-gray-700">
+                      <div className="flex items-start justify-between mb-1">
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-1 mb-1">
-                            <Clock className="w-2.5 h-2.5 text-gray-500" />
-                            <span className="text-[10px] text-gray-500">
-                              {new Date(mapping.timestamp).toLocaleTimeString()}
-                            </span>
+                          <div className="text-blue-400 font-mono text-[10px] truncate">
+                            {mapping.sourceField}
                           </div>
-                          <div className="text-xs text-gray-300 mb-1 truncate">
-                            <span className="text-blue-400">Source:</span> {mapping.sourceField}
-                          </div>
-                          <div className="text-xs text-gray-300 flex items-center gap-1 truncate">
-                            <TrendingUp className="w-2.5 h-2.5 text-green-400" />
-                            <span className="text-green-400">Unified:</span> {mapping.unifiedField}
+                          <div className="text-green-400 font-mono text-[10px] mt-1 truncate">
+                            → {mapping.unifiedField}
                           </div>
                         </div>
                         <div
-                          className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
-                            mapping.confidence >= 75
+                          className={`ml-2 px-1.5 py-0.5 rounded text-[9px] font-bold flex-shrink-0 ${
+                            mapping.confidence >= 80
+                              ? 'bg-green-500/20 text-green-400'
+                              : mapping.confidence >= 60
                               ? 'bg-orange-500/20 text-orange-400'
                               : 'bg-red-500/20 text-red-400'
                           }`}
@@ -256,48 +265,24 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
               ) : (
                 <div className="space-y-2">
                   {schemaChanges.slice(0, 3).map((change) => (
-                    <div
-                      key={change.id}
-                      className="bg-gray-800 rounded-lg p-3 border border-gray-700"
-                    >
-                      <div className="flex items-start gap-2">
-                        <div
-                          className={`w-6 h-6 rounded flex items-center justify-center ${
+                    <div key={change.id} className="p-2 bg-gray-900 rounded border border-gray-700">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span
+                          className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${
                             change.changeType === 'added'
-                              ? 'bg-green-500/20'
+                              ? 'bg-green-500/20 text-green-400'
                               : change.changeType === 'modified'
-                              ? 'bg-yellow-500/20'
-                              : 'bg-red-500/20'
+                              ? 'bg-blue-500/20 text-blue-400'
+                              : 'bg-red-500/20 text-red-400'
                           }`}
                         >
-                          <AlertTriangle
-                            className={`w-3 h-3 ${
-                              change.changeType === 'added'
-                                ? 'text-green-400'
-                                : change.changeType === 'modified'
-                                ? 'text-yellow-400'
-                                : 'text-red-400'
-                            }`}
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-1 mb-1">
-                            <span className="text-xs font-medium text-white truncate">{change.source}</span>
-                            <span
-                              className={`px-1 py-0.5 rounded text-[9px] font-semibold uppercase ${
-                                change.changeType === 'added'
-                                  ? 'bg-green-500/20 text-green-400'
-                                  : change.changeType === 'modified'
-                                  ? 'bg-yellow-500/20 text-yellow-400'
-                                  : 'bg-red-500/20 text-red-400'
-                              }`}
-                            >
-                              {change.changeType}
-                            </span>
-                          </div>
-                          <div className="text-xs text-blue-400 mb-1 truncate">{change.field}</div>
-                          <div className="text-[10px] text-gray-500 truncate">{change.description}</div>
-                        </div>
+                          {change.changeType.toUpperCase()}
+                        </span>
+                        <span className="text-gray-400 text-[10px] font-mono">{change.entity}</span>
+                      </div>
+                      <div className="text-[10px] text-gray-300">{change.field}</div>
+                      <div className="text-[9px] text-gray-500 mt-1">
+                        {new Date(change.timestamp).toLocaleString()}
                       </div>
                     </div>
                   ))}
@@ -306,32 +291,29 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
             </div>
           </div>
 
-          {/* RAG Learning Engine Panel */}
-          <div className="bg-gradient-to-br from-teal-950 to-cyan-950 border border-teal-700/30 rounded-lg p-4">
+          {/* RAG Learning Engine */}
+          <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4 flex-1">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-6 rounded-full bg-teal-500 flex items-center justify-center text-white text-xs font-bold">
-                🧠
+              <div className="w-6 h-6 rounded-full bg-teal-600 flex items-center justify-center text-white text-xs font-bold">
+                📚
               </div>
-              <span className="text-white font-bold text-sm">RAG Learning Engine</span>
+              <span className="text-white font-bold text-sm">RAG Learning</span>
               <span className="ml-auto text-xs bg-teal-600 text-white px-2 py-0.5 rounded-full font-bold">
-                {dclState?.rag.total_mappings || 0} stored
+                {dclState?.rag?.last_retrieval_count || 0} retrieved
               </span>
             </div>
-            <div className="text-xs space-y-2 max-h-[200px] overflow-y-auto">
-              {!dclState?.rag.retrievals || dclState.rag.retrievals.length === 0 ? (
-                <div className="text-teal-300/70 italic text-[11px]">
-                  No similar mappings retrieved yet. Map a source to see learned patterns.
+            <div className="text-xs space-y-2 max-h-[150px] overflow-y-auto">
+              {dclState?.rag?.retrievals?.length === 0 ? (
+                <div className="text-gray-500 italic text-[11px]">
+                  No similar mappings found yet. The RAG engine will learn as you map data.
                 </div>
               ) : (
-                dclState.rag.retrievals.map((r, idx) => {
-                  const similarity = Math.round(r.similarity * 100);
+                dclState?.rag?.retrievals?.map((retrieval: any, idx: number) => {
+                  const similarity = Math.round(retrieval.score * 100);
                   return (
-                    <div key={idx} className="bg-cyan-900/30 rounded p-2 border border-cyan-700/30">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-cyan-200 font-medium text-[11px]">
-                          {r.source_field} → {r.ontology_entity}
-                        </span>
-                        <span className="text-teal-300 font-bold text-[10px]">{similarity}%</span>
+                    <div key={idx} className="p-2 bg-gradient-to-r from-teal-950 to-cyan-950 rounded border border-teal-700/50">
+                      <div className="text-[10px] text-teal-300 font-mono mb-1 truncate">
+                        {retrieval.mapping}
                       </div>
                       <div className="w-full bg-cyan-950 rounded-sm h-1.5 overflow-hidden">
                         <div

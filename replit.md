@@ -25,11 +25,14 @@ The project aims to provide a dynamic data connection layer, aligning diverse da
   - **Active Agent Performance Monitor**: Fully restored showing agent status, executions/hr, CPU, and memory usage
 - **DCL Graph Container Updates**:
   - Removed Agent Consumers column (simplified from 3-column to 2-column layout)
-  - Replaced Prod Mode toggle with "Run All" dropdown in Intelligence Engine box (emerald green button)
-    - **Production Mode (dev_mode=true)**: Uses AI/RAG for intelligent semantic validation  
-    - **Heuristic Mode (dev_mode=false)**: Uses fast deterministic domain-based filtering
-    - Connects all 9 data sources: dynamics, salesforce, supabase, mongodb, hubspot, snowflake, sap, netsuite, legacy_sql
-    - Maps to all agents: finops_pilot, revops_pilot
+  - **Prod Mode Toggle**: Located in Intelligence Engine box (default: OFF)
+    - **Prod Mode ON (dev_mode=true)**: Uses AI/RAG for intelligent semantic validation via Gemini API + Pinecone
+    - **Prod Mode OFF (dev_mode=false)**: Uses fast deterministic domain-based heuristic filtering
+    - Calls existing `/toggle_dev_mode` endpoint (legacy-compatible)
+  - **Actions Dropdown**: Next to Prod Mode toggle
+    - **Run**: Connects all 9 data sources to all 2 agents using current Prod Mode state via `/connect` endpoint
+    - **Reset**: Clears all mappings via `/reset` endpoint
+    - Default selections: ALL sources (dynamics, salesforce, hubspot, sap, netsuite, legacy_sql, snowflake, supabase, mongodb) → ALL agents (revops_pilot, finops_pilot)
   - **Intelligence Review Panel**: Full functionality restored
     - "Review" button on each mapping item
     - Detailed review modal showing source data snippet, proposed unified mapping, confidence score, and LLM reasoning
