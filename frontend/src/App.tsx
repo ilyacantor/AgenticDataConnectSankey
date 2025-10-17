@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import { AutonomyProvider } from './contexts/AutonomyContext';
+import { AutonomyProvider, useAutonomy } from './contexts/AutonomyContext';
 import AppLayout from './components/AppLayout';
 import DashboardPage from './components/DashboardPage';
 import DataLineagePage from './components/DataLineagePage';
 import ConnectionsPage from './components/ConnectionsPage';
+import LegacyDCLUI from './components/LegacyDCLUI';
 
-function App() {
+function AppContent() {
   const [currentPage, setCurrentPage] = useState('dashboard');
+  const { legacyMode } = useAutonomy();
 
   const renderPage = () => {
     switch (currentPage) {
@@ -42,11 +44,22 @@ function App() {
     }
   };
 
+  // If legacy mode is enabled, show the legacy UI
+  if (legacyMode) {
+    return <LegacyDCLUI />;
+  }
+
+  return (
+    <AppLayout currentPage={currentPage} onNavigate={setCurrentPage}>
+      {renderPage()}
+    </AppLayout>
+  );
+}
+
+function App() {
   return (
     <AutonomyProvider>
-      <AppLayout currentPage={currentPage} onNavigate={setCurrentPage}>
-        {renderPage()}
-      </AppLayout>
+      <AppContent />
     </AutonomyProvider>
   );
 }
