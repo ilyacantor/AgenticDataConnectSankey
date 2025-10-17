@@ -4,7 +4,6 @@ import DCLGraphContainer from './DCLGraphContainer';
 import IntelligenceReviewPanel from './IntelligenceReviewPanel';
 import AgentPerformanceMonitor from './AgentPerformanceMonitor';
 import {
-  mockSourceNodes,
   mockAgentNodes,
   mockDCLStats,
   mockMappingReviews,
@@ -27,7 +26,6 @@ export default function DashboardPage() {
       <div className="grid grid-cols-[1fr_420px] gap-6">
         <div>
           <DCLGraphContainer
-            sources={mockSourceNodes}
             agents={mockAgentNodes}
             stats={mockDCLStats}
           />
