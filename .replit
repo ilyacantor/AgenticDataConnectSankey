@@ -20,10 +20,6 @@ localPort = 35611
 externalPort = 3000
 
 [[ports]]
-localPort = 36011
-externalPort = 3003
-
-[[ports]]
 localPort = 40415
 externalPort = 4200
 
@@ -32,9 +28,9 @@ localPort = 44849
 externalPort = 3002
 
 [deployment]
-deploymentTarget = "vm"
-run = ["sh", "-c", "./start.sh"]
-build = ["pip", "install", "--no-cache-dir", "-r", "requirements.txt"]
+deploymentTarget = "autoscale"
+run = ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "5000"]
+build = ["npm", "run", "build", "--prefix", "frontend"]
 
 [workflows]
 runButton = "Project"
