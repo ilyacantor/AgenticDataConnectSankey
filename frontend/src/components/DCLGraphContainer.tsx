@@ -53,6 +53,29 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
     }
   }, [dclState?.events, typingEvents]);
 
+  // Auto-run graph on page load to display all nodes, sources, and agents
+  useEffect(() => {
+    if (!dclState) return;
+    
+    // Check if graph is empty (no nodes) and we haven't run yet
+    const hasNodes = dclState.graph?.nodes && dclState.graph.nodes.length > 0;
+    
+    if (!hasNodes && !isProcessing) {
+      // Auto-run the mapping to populate the graph
+      const autoRun = async () => {
+        setIsProcessing(true);
+        try {
+          await fetch(`/connect?sources=${allSources}&agents=${allAgents}`);
+        } catch (error) {
+          console.error('Error auto-running graph:', error);
+        } finally {
+          setTimeout(() => setIsProcessing(false), 1500);
+        }
+      };
+      autoRun();
+    }
+  }, [dclState, isProcessing, allSources, allAgents]);
+
   // Toggle Prod Mode using existing backend endpoint
   const handleProdModeToggle = async () => {
     try {
