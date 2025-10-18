@@ -28,7 +28,7 @@ localPort = 44849
 externalPort = 3002
 
 [deployment]
-deploymentTarget = "vm"
+deploymentTarget = "autoscale"
 build = ["sh", "-c", "pip install --no-cache-dir -r requirements.txt && cd frontend && npm install && npm run build"]
 run = ["python", "app.py"]
 
