@@ -15,9 +15,9 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Data Engineer Control Center</h1>
+        <h1 className="text-3xl font-bold text-white mb-2">Control Center</h1>
         <p className="text-gray-400">
-          Monitor live data connectivity, review intelligent mappings, and track agent performance
+          Agentic Orchestration Hub
         </p>
       </div>
 
