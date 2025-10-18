@@ -1,4 +1,5 @@
 import { LayoutDashboard, GitBranch, Cable, Bot, Network, Settings } from 'lucide-react';
+import autonomosLogo from '../assets/autonomos-logo.png';
 
 interface LeftNavProps {
   isCollapsed: boolean;
@@ -30,11 +31,11 @@ export default function LeftNav({ isCollapsed, currentPage, onNavigate }: LeftNa
         isCollapsed ? 'w-18' : 'w-60'
       } bg-gray-900 border-r border-gray-800 transition-all duration-300 flex flex-col`}
     >
-      <div className="h-16 flex items-center justify-center border-b border-gray-800">
+      <div className="h-16 flex items-center justify-center border-b border-gray-800 px-4">
         {isCollapsed ? (
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg" />
+          <img src={autonomosLogo} alt="autonomOS" className="h-8 object-contain" />
         ) : (
-          <div className="text-xl font-bold text-white">AOS Platform</div>
+          <img src={autonomosLogo} alt="autonomOS" className="h-8 object-contain" />
         )}
       </div>
 

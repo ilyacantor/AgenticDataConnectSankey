@@ -51,3 +51,12 @@ Authentication is currently disabled for ease of use (`AUTH_ENABLED = False` in 
 - **Authentication**: Supabase for user authentication and role management (when enabled).
 - **Visualization Libraries**: Cytoscape.js for graph visualization.
 - **Data Sources**: Integration with enterprise systems like Dynamics, Salesforce, SAP, NetSuite, Snowflake, Supabase, MongoDB, and Legacy SQL databases.
+
+## Recent Changes (October 18, 2025)
+- **Brand Logo**: Replaced "AOS Platform" text with autonomOS logo and wordmark across all pages in the left navigation
+- **Comprehensive Hover Tooltips**: Added informative hover explanations across entire AOA Control Center interface
+  - Global controls (AOA Header, Autonomy Mode, UI Mode toggles)
+  - All 10 AOA Function Cards with detailed descriptions
+  - Dashboard components (Active Agent Performance)
+  - DCL components (DCL Header, Graph, Intelligence Review, RAG Engine, Narration)
+  - xAO Page (sidebar link, header, and all 6 metrics with detailed tooltips)
