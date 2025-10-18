@@ -6,6 +6,18 @@ import aoaMetricsData from '../data/aoaMetrics.json';
 export default function XAOPage() {
   const [xaoMetrics] = useState<xAOMetric[]>(aoaMetricsData.xaoFunctions as xAOMetric[]);
 
+  const getMetricTooltip = (id: string): string => {
+    const tooltips: Record<string, string> = {
+      cross_discovery: 'Shows the total number of active API endpoints discovered across federated enterprises.',
+      federation_health: 'Represents the synchronization and uptime status of federated orchestrations.',
+      trust_score: 'Quantifies the inter-enterprise trust, reliability, and data fidelity score of cross-domain exchanges.',
+      data_sovereignty: 'Measures compliance with regional data residency and sovereignty requirements.',
+      cost_allocation: 'Displays the distribution of compute and resource costs across federated orchestration domains.',
+      sla_compliance: 'Tracks the service-level adherence of each orchestrated component relative to enterprise SLAs.',
+    };
+    return tooltips[id] || '';
+  };
+
   const getTrendIcon = (trend: string) => {
     switch (trend) {
       case 'up':
@@ -20,7 +32,12 @@ export default function XAOPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-white mb-2">xAO</h1>
+        <h1 
+          className="text-3xl font-bold text-white mb-2 cursor-help" 
+          title="Cross-Agentic Orchestration (xAO) coordinates multiple autonomOS instances across federated domains."
+        >
+          xAO
+        </h1>
         <p className="text-gray-400">
           Cross-agentic orchestration metrics and coordination details
         </p>
@@ -32,7 +49,8 @@ export default function XAOPage() {
           {xaoMetrics.map((metric) => (
             <div
               key={metric.id}
-              className="bg-slate-800/60 rounded-xl p-4 border border-slate-700 hover:border-cyan-500/50 transition-colors"
+              className="bg-slate-800/60 rounded-xl p-4 border border-slate-700 hover:border-cyan-500/50 transition-colors cursor-help"
+              title={getMetricTooltip(metric.id)}
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">

@@ -1,0 +1,92 @@
+# ==========================
+# AutonomOS Hover Tooltip Definitions
+# ==========================
+# Context: Apply across AOA Control Center, DCL view, and xAO page
+# Use with React + shadcn/ui Tooltip or standard HTML title attributes
+# ==========================
+
+hover_explanations = {
+
+    # === GLOBAL CONTROLS ===
+    "aoa_header": "AutonomOS Agentic Orchestration Agent (AOA): A persistent, meta-level agent that observes, coordinates, and optimizes the behavior of all domain agents (FinOps, RevOps, HR, etc.) operating on the Data Connectivity Layer (DCL).",
+
+    "autonomy_mode": "Autonomy Mode defines how autonomOS manages itself. 'Auto (Guardrails)' allows autonomous decisions with built-in safety limits. 'Manual' requires human confirmation for critical steps.",
+
+    "ui_mode": "UI Mode toggle: 'Modern' displays the new adaptive layout; 'Legacy' provides the original interface for backward compatibility and diagnostic review.",
+
+    # === AOA FUNCTION CONTAINERS ===
+    "Discover": "Identifies and registers all active agents, their schemas, and operational capabilities within the system.",
+    "Sense": "Monitors live data streams and system signals to classify and interpret contextual events.",
+    "Execute": "Performs corrective or optimization actions automatically across connected systems.",
+    "Observe": "Collects and visualizes telemetry from all orchestrated agents for situational awareness.",
+    "Plan": "Generates and validates action plans across multi-agent workflows, ensuring goal alignment.",
+    "Prioritize": "Determines task execution order and resource allocation across competing workflows.",
+    "Policy": "Applies governance and compliance constraints during orchestration.",
+    "Budget": "Tracks resource consumption and cost integrity across automated workflows.",
+    "Learn": "Continuously improves orchestration logic using historical data and reinforcement signals.",
+    "Lifecycle": "Manages the entire lifecycle of agents — onboarding, health, upgrades, and retirement.",
+
+    # === ACTIVE AGENT PERFORMANCE ===
+    "ActiveAgentPerformance": "Displays real-time operational metrics for each domain agent. Each row represents execution throughput, CPU, and memory usage per active agent.",
+
+    # === DATA CONNECTION LAYER (DCL) ===
+    "DCL": "The Data Connectivity Layer (DCL) links heterogeneous data sources without migrations or ETL. It maps entities to a unified ontology for domain agents to act on.",
+    "DCLGraph": "The live connectivity graph visualizes all active data pipelines and ontology mappings — from source systems (left) to unified entities (right).",
+
+    # === INTELLIGENCE REVIEW ===
+    "IntelligenceReview": "Aggregates flagged data quality or mapping anomalies for human or agentic review before execution. Supports auto-correction and retraining triggers.",
+
+    # === RAG LEARNING ENGINE ===
+    "RAGLearningEngine": "Retrieval-Augmented Generation (RAG) component that enriches context for agent reasoning. It stores embeddings, retrieves related knowledge, and continuously self-tunes mappings.",
+
+    # === NARRATION ===
+    "Narration": "Chronological event log showing every decision, mapping, and execution step. Functions as a transparent, auditable trail of autonomous system behavior.",
+
+    # === xAO CROSS-ORCHESTRATION PAGE ===
+    "xAO": "Cross-Agentic Orchestration (xAO) coordinates multiple autonomOS instances across federated domains.",
+    "CrossEnterpriseDiscovery": "Shows the total number of active API endpoints discovered across federated enterprises.",
+    "FederationHealth": "Represents the synchronization and uptime status of federated orchestrations.",
+    "TrustScore": "Quantifies the inter-enterprise trust, reliability, and data fidelity score of cross-domain exchanges.",
+    "DataSovereignty": "Measures compliance with regional data residency and sovereignty requirements.",
+    "CostAllocation": "Displays the distribution of compute and resource costs across federated orchestration domains.",
+    "SLACompliance": "Tracks the service-level adherence of each orchestrated component relative to enterprise SLAs."
+}
+
+# Example React integration (replace component tags with your own)
+"""
+<Tooltip content={hover_explanations['aoa_header']}>
+  <h2 className="text-lg font-semibold">AutonomOS Orchestration Layer</h2>
+</Tooltip>
+
+{Object.entries(aoa_functions).map(([func, text]) => (
+  <Tooltip key={func} content={hover_explanations[func]}>
+    <div className="aoa-function-tile">{func}</div>
+  </Tooltip>
+))}
+
+<Tooltip content={hover_explanations['ActiveAgentPerformance']}>
+  <Section title="Active Agent Performance" />
+</Tooltip>
+
+<Tooltip content={hover_explanations['DCL']}>
+  <Section title="Data Connection Layer (DCL)" />
+</Tooltip>
+
+<Tooltip content={hover_explanations['IntelligenceReview']}>
+  <Panel title="Intelligence Review" />
+</Tooltip>
+
+<Tooltip content={hover_explanations['RAGLearningEngine']}>
+  <Panel title="RAG Learning Engine" />
+</Tooltip>
+
+<Tooltip content={hover_explanations['Narration']}>
+  <Panel title="Narration" />
+</Tooltip>
+
+<Tooltip content={hover_explanations['xAO']}>
+  <SidebarLink label="xAO" />
+</Tooltip>
+"""
+
+print("✅ All hover explanations defined — ready for tooltip integration across AOA, DCL, and xAO containers.")

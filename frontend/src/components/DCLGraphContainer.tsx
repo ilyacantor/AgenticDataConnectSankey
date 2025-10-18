@@ -1,4 +1,4 @@
-import { Activity, Zap, AlertCircle, Clock, TrendingUp, AlertTriangle, ChevronDown, Play, X, CheckCircle, RotateCcw } from 'lucide-react';
+import { Activity, Zap, ChevronDown, Play, X, CheckCircle, RotateCcw } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import type { AgentNode, DCLStats, MappingReview, SchemaChange } from '../types';
 import LiveSankeyGraph from './LiveSankeyGraph';
@@ -12,7 +12,7 @@ interface DCLGraphContainerProps {
   schemaChanges: SchemaChange[];
 }
 
-export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DCLGraphContainerProps) {
+export default function DCLGraphContainer({ mappings, schemaChanges }: DCLGraphContainerProps) {
   const [activeTab, setActiveTab] = useState<'review' | 'schema'>('review');
   const [prodMode, setProdMode] = useState(false);
   const [showRunDropdown, setShowRunDropdown] = useState(false);
@@ -117,7 +117,12 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
   return (
     <div className="bg-gray-900 rounded-xl border border-gray-800 p-3 sm:p-6 -mt-[5px]">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg sm:text-xl font-semibold text-white">Data Connection Layer (DCL)</h2>
+        <h2 
+          className="text-lg sm:text-xl font-semibold text-white cursor-help" 
+          title="The Data Connectivity Layer (DCL) links heterogeneous data sources without migrations or ETL. It maps entities to a unified ontology for domain agents to act on."
+        >
+          Data Connection Layer (DCL)
+        </h2>
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
           <span className="text-xs sm:text-sm text-gray-400">Live</span>
@@ -214,7 +219,9 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
             </div>
           </div>
 
-          <LiveSankeyGraph />
+          <div title="The live connectivity graph visualizes all active data pipelines and ontology mappings — from source systems (left) to unified entities (right)." className="cursor-help">
+            <LiveSankeyGraph />
+          </div>
         </div>
 
         <div className="flex flex-col gap-4">
@@ -224,7 +231,12 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
               <div className="w-6 h-6 rounded-full bg-orange-600 flex items-center justify-center text-white text-xs font-bold">
                 🤖
               </div>
-              <span className="text-white font-bold text-sm">Intelligence Review</span>
+              <span 
+                className="text-white font-bold text-sm cursor-help" 
+                title="Aggregates flagged data quality or mapping anomalies for human or agentic review before execution. Supports auto-correction and retraining triggers."
+              >
+                Intelligence Review
+              </span>
             </div>
 
             <div className="flex gap-2 mb-3">
@@ -320,7 +332,12 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
               <div className="w-6 h-6 rounded-full bg-teal-500 flex items-center justify-center text-white text-xs font-bold">
                 🧠
               </div>
-              <span className="text-white font-bold text-sm">RAG Learning Engine</span>
+              <span 
+                className="text-white font-bold text-sm cursor-help" 
+                title="Retrieval-Augmented Generation (RAG) component that enriches context for agent reasoning. It stores embeddings, retrieves related knowledge, and continuously self-tunes mappings."
+              >
+                RAG Learning Engine
+              </span>
               <span className="ml-auto text-xs bg-teal-600 text-white px-2 py-0.5 rounded-full font-bold">
                 {dclState?.rag?.total_mappings || 0} stored
               </span>
@@ -364,7 +381,12 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
               <div className="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs font-bold">
                 📝
               </div>
-              <span className="text-white font-bold text-sm">Narration</span>
+              <span 
+                className="text-white font-bold text-sm cursor-help" 
+                title="Chronological event log showing every decision, mapping, and execution step. Functions as a transparent, auditable trail of autonomous system behavior."
+              >
+                Narration
+              </span>
               <span className="ml-auto text-xs bg-purple-600 text-white px-2 py-0.5 rounded-full font-bold">
                 {dclState?.events.length || 0} events
               </span>

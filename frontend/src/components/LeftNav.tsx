@@ -11,6 +11,7 @@ interface NavItem {
   label: string;
   icon: React.ReactNode;
   highlight?: boolean;
+  tooltip?: string;
 }
 
 export default function LeftNav({ isCollapsed, currentPage, onNavigate }: LeftNavProps) {
@@ -18,7 +19,7 @@ export default function LeftNav({ isCollapsed, currentPage, onNavigate }: LeftNa
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
     { id: 'lineage', label: 'Data Lineage', icon: <GitBranch className="w-5 h-5" /> },
     { id: 'connections', label: 'Connections', icon: <Cable className="w-5 h-5" /> },
-    { id: 'xao', label: 'xAO', icon: <Bot className="w-5 h-5" /> },
+    { id: 'xao', label: 'xAO', icon: <Bot className="w-5 h-5" />, tooltip: 'Cross-Agentic Orchestration (xAO) coordinates multiple autonomOS instances across federated domains.' },
     { id: 'ontology', label: 'Ontology', icon: <Network className="w-5 h-5" /> },
     { id: 'settings', label: 'Settings', icon: <Settings className="w-5 h-5" /> },
   ];
@@ -42,6 +43,7 @@ export default function LeftNav({ isCollapsed, currentPage, onNavigate }: LeftNa
           <button
             key={item.id}
             onClick={() => onNavigate(item.id)}
+            title={item.tooltip}
             className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all ${
               currentPage === item.id
                 ? 'bg-blue-600 text-white'
