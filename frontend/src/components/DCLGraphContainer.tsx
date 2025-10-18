@@ -116,13 +116,7 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
 
   return (
     <div className="bg-gray-900 rounded-xl border border-gray-800 p-3 sm:p-6 -mt-[5px]">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg sm:text-xl font-semibold text-white">Data Connection Layer (DCL)</h2>
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-          <span className="text-xs sm:text-sm text-gray-400">Live</span>
-        </div>
-      </div>
+      {/* Header removed per user request */}
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-4 lg:gap-6">
         <div className="flex flex-col">
