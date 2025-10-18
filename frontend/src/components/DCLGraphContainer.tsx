@@ -115,7 +115,7 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
   };
 
   return (
-    <div className="bg-gray-900 rounded-xl border border-gray-800 p-3 sm:p-6">
+    <div className="bg-gray-900 rounded-xl border border-gray-800 p-3 sm:p-6 -mt-[5px]">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg sm:text-xl font-semibold text-white">Data Connection Layer (DCL)</h2>
         <div className="flex items-center gap-2">
