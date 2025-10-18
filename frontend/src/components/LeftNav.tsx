@@ -33,9 +33,9 @@ export default function LeftNav({ isCollapsed, currentPage, onNavigate }: LeftNa
     >
       <div className="h-16 flex items-center border-b border-gray-800 px-3">
         {isCollapsed ? (
-          <img src={autonomosLogo} alt="autonomOS" className="h-8 object-contain mx-auto" />
+          <img src={autonomosLogo} alt="autonomOS" className="h-[42px] object-contain mx-auto" />
         ) : (
-          <img src={autonomosLogo} alt="autonomOS" className="h-8 object-contain pl-3" />
+          <img src={autonomosLogo} alt="autonomOS" className="h-[42px] object-contain -ml-3" />
         )}
       </div>
 
