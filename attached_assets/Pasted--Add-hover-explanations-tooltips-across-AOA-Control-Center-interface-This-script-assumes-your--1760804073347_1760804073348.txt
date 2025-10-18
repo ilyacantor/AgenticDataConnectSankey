@@ -1,0 +1,53 @@
+# Add hover explanations (tooltips) across AOA Control Center interface
+# This script assumes your front-end uses React + Tailwind + shadcn/ui or similar
+
+"""
+Task: Implement informative hover tooltips for AOA platform components
+Location: Control Center (AOA Platform UI)
+"""
+
+from shadcn_ui import Tooltip
+
+# Hover explanations for AOA and system controls
+hover_explanations = {
+    "aoa_header": "AutonomOS Agentic Orchestration Agent (AOA): A persistent, meta-level agent that observes, coordinates, and optimizes the behavior of all other domain agents (FinOps, RevOps, HR, etc.) running on the Data Connectivity Layer (DCL).",
+    "autonomy_mode": "Autonomy Mode controls how autonomOS manages itself. 'Auto (Guardrails)' allows self-directed agent decisions within preset boundaries, while 'Manual' requires human confirmation for major actions.",
+    "ui_mode": "Switch between Modern (current UI framework) and Legacy (classic layout) to visualize platform evolution or ensure compatibility with older modules."
+}
+
+# Hover explanations for AOA Function containers
+aoa_functions = {
+    "Discover": "Discovers and registers all active domain agents and their capabilities across the organization.",
+    "Sense": "Monitors real-time events, anomalies, and trigger patterns across all agents and connected systems.",
+    "Execute": "Carries out automated corrective or optimization actions orchestrated by AOA in live environments.",
+    "Observe": "Continuously tracks operational signals, telemetry, and feedback loops to evaluate performance.",
+    "Plan": "Generates, adjusts, and simulates coordination plans based on agent readiness and data flow states.",
+    "Prioritize": "Assigns execution order and resource priority across competing agentic workflows.",
+    "Policy": "Ensures compliance with internal and external governance rules during orchestration.",
+    "Budget": "Manages financial control and cost integrity across autonomous compute and resource allocations.",
+    "Learn": "Continuously refines orchestration policies and mappings through reinforcement learning.",
+    "Lifecycle": "Oversees agent onboarding, updates, health, and retirement cycles across the federated network."
+}
+
+# Sample JSX (React) snippet to insert tooltips in component render
+"""
+<Tooltip content={hover_explanations['aoa_header']}>
+  <h2 className="text-lg font-semibold">AutonomOS Orchestration Layer</h2>
+</Tooltip>
+
+{Object.entries(aoa_functions).map(([func, text]) => (
+  <Tooltip key={func} content={text}>
+    <div className="aoa-function-tile">{func}</div>
+  </Tooltip>
+))}
+
+<Tooltip content={hover_explanations['autonomy_mode']}>
+  <Dropdown options={['Auto (Guardrails)', 'Manual']} />
+</Tooltip>
+
+<Tooltip content={hover_explanations['ui_mode']}>
+  <Switch options={['Modern', 'Legacy']} />
+</Tooltip>
+"""
+
+print("✅ Hover explanations defined. Add Tooltip wrappers around each relevant element in your JSX/HTML.")

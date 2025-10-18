@@ -83,7 +83,10 @@ export default function AOAStatusCard() {
           <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center">
             <Activity className="w-6 h-6 text-white" />
           </div>
-          <div>
+          <div 
+            className="cursor-help"
+            title="AutonomOS Agentic Orchestration Agent (AOA): A persistent, meta-level agent that observes, coordinates, and optimizes the behavior of all other domain agents (FinOps, RevOps, HR, etc.) running on the Data Connectivity Layer (DCL)."
+          >
             <h2 className="text-xl font-semibold text-slate-200">AutonomOS Orchestration Layer</h2>
             <p className="text-sm text-slate-500">Mode: {autonomyMode}</p>
           </div>

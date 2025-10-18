@@ -41,50 +41,60 @@ export default function AOAFunctionsPanel() {
     }
   };
 
-  const getFunctionLabel = (id: string): { label: string; description: string } => {
-    const labels: Record<string, { label: string; description: string }> = {
+  const getFunctionLabel = (id: string): { label: string; description: string; fullDescription: string } => {
+    const labels: Record<string, { label: string; description: string; fullDescription: string }> = {
       discover: {
         label: 'Agent Registry Health',
         description: '% of known agents responding to heartbeat pings',
+        fullDescription: 'Discovers and registers all active domain agents and their capabilities across the organization.',
       },
       sense: {
         label: 'Event Classification Accuracy',
         description: '% of incoming events correctly identified and enriched',
+        fullDescription: 'Monitors real-time events, anomalies, and trigger patterns across all agents and connected systems.',
       },
       policy: {
         label: 'Policy Compliance',
         description: '% of actions executing within guardrails (scope, permissions, SLAs)',
+        fullDescription: 'Ensures compliance with internal and external governance rules during orchestration.',
       },
       plan: {
         label: 'Plan Generation Success',
         description: '% of triggers converted into executable plans',
+        fullDescription: 'Generates, adjusts, and simulates coordination plans based on agent readiness and data flow states.',
       },
       prioritize: {
         label: 'Conflict Resolution Rate',
         description: '% of plan conflicts resolved automatically',
+        fullDescription: 'Assigns execution order and resource priority across competing agentic workflows.',
       },
       execute: {
         label: 'Execution Success Rate',
         description: '% of plan steps completed without errors',
+        fullDescription: 'Carries out automated corrective or optimization actions orchestrated by AOA in live environments.',
       },
       budget: {
         label: 'Guardrail Integrity',
         description: '% of actions staying within cost/time/risk thresholds',
+        fullDescription: 'Manages financial control and cost integrity across autonomous compute and resource allocations.',
       },
       observe: {
         label: 'Trace Completeness',
         description: '% of plans producing full observability traces',
+        fullDescription: 'Continuously tracks operational signals, telemetry, and feedback loops to evaluate performance.',
       },
       learn: {
         label: 'Learning Impact',
         description: '% of recurring plans that improved results',
+        fullDescription: 'Continuously refines orchestration policies and mappings through reinforcement learning.',
       },
       lifecycle: {
         label: 'Agent Health Coverage',
         description: '% of agents updated and resource-balanced',
+        fullDescription: 'Oversees agent onboarding, updates, health, and retirement cycles across the federated network.',
       },
     };
-    return labels[id] || { label: 'Unknown', description: 'No description available' };
+    return labels[id] || { label: 'Unknown', description: 'No description available', fullDescription: 'No description available' };
   };
 
   return (
@@ -92,11 +102,12 @@ export default function AOAFunctionsPanel() {
       <h2 className="text-xl font-semibold text-slate-200 mb-4">AOA Functions</h2>
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {aoaMetrics.map((metric) => {
-          const { label, description } = getFunctionLabel(metric.id);
+          const { label, description, fullDescription } = getFunctionLabel(metric.id);
           return (
             <div
               key={metric.id}
-              className="bg-slate-800/60 rounded-xl p-4 border border-slate-700 hover:border-cyan-500/50 transition-colors group"
+              className="bg-slate-800/60 rounded-xl p-4 border border-slate-700 hover:border-cyan-500/50 transition-colors group cursor-help"
+              title={fullDescription}
             >
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold text-slate-200">{metric.name}</h3>

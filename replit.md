@@ -12,6 +12,14 @@ The project aims to provide a dynamic data connection layer, aligning diverse da
 - **Model**: `gemini-2.5-pro` (not `gemini-pro` which is retired)
 - **Design Constraint**: Preserve existing GUI, add new features as separate sections
 
+## Recent Changes (October 18, 2025)
+- **Hover Tooltips**: Added comprehensive hover explanations across AOA Control Center interface
+  - AOA Header: Explains the AutonomOS Orchestration Layer's role
+  - Autonomy Mode Toggle: Describes autonomy mode behavior and options
+  - UI Mode Toggle: Explains Modern vs Legacy UI switching
+  - AOA Function Cards: Each function (Discover, Sense, Execute, Observe, Plan, Prioritize, Policy, Budget, Learn, Lifecycle) has detailed tooltip explaining its purpose
+- **Layout Adjustments**: Moved DCL graph 5px higher for improved spacing
+
 ## Recent Changes (October 17, 2025)
 - **Modern UI Integration**: Successfully integrated all legacy DCL functionality into Bolt v2 UI
   - Connections Page: Now displays actual data sources (Dynamics, Salesforce, SAP, NetSuite, Snowflake, Supabase, MongoDB, Legacy SQL, HubSpot)

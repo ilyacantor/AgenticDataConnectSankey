@@ -12,7 +12,7 @@ export default function LegacyToggle() {
           ? 'bg-cyan-600 border-cyan-500 text-white'
           : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300'
       }`}
-      title={legacyMode ? 'Switch to modern UI' : 'Switch to legacy DCL UI'}
+      title="Switch between Modern (current UI framework) and Legacy (classic layout) to visualize platform evolution or ensure compatibility with older modules."
     >
       <RotateCcw className="w-4 h-4" />
       <div className="text-left">
