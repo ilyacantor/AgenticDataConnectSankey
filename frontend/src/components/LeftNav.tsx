@@ -31,11 +31,11 @@ export default function LeftNav({ isCollapsed, currentPage, onNavigate }: LeftNa
         isCollapsed ? 'w-18' : 'w-60'
       } bg-gray-900 border-r border-gray-800 transition-all duration-300 flex flex-col`}
     >
-      <div className="h-16 flex items-center justify-center border-b border-gray-800 px-4">
+      <div className="h-16 flex items-center border-b border-gray-800 px-3">
         {isCollapsed ? (
-          <img src={autonomosLogo} alt="autonomOS" className="h-8 object-contain" />
+          <img src={autonomosLogo} alt="autonomOS" className="h-8 object-contain mx-auto" />
         ) : (
-          <img src={autonomosLogo} alt="autonomOS" className="h-8 object-contain" />
+          <img src={autonomosLogo} alt="autonomOS" className="h-8 object-contain pl-3" />
         )}
       </div>
 
