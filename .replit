@@ -29,8 +29,8 @@ externalPort = 3002
 
 [deployment]
 deploymentTarget = "vm"
-run = ["python", "-m", "uvicorn", "app:app", "--host", "0.0.0.0", "--port", "5000"]
 build = ["sh", "-c", "pip install --no-cache-dir -r requirements.txt && cd frontend && npm install && npm run build"]
+run = ["python", "app.py"]
 
 [workflows]
 runButton = "Project"

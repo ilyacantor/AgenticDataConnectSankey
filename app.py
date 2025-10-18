@@ -1626,3 +1626,9 @@ def agentic_connection():
 
 # Mount the built frontend - must be last to not override API routes
 app.mount("/", StaticFiles(directory="dist", html=True), name="dist")
+
+# Programmatic server startup - bypasses PATH issues in deployment
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.getenv("PORT", 5000))
+    uvicorn.run("app:app", host="0.0.0.0", port=port, reload=False)
