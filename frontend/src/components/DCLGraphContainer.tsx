@@ -180,7 +180,7 @@ export default function DCLGraphContainer({ stats, mappings, schemaChanges }: DC
                 <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-[10px] sm:text-[10px] text-blue-300">
                   <div className="flex items-center gap-1">
                     <div className={`w-1.5 h-1.5 rounded-full ${prodMode ? 'bg-purple-400 animate-pulse' : 'bg-gray-500'}`} />
-                    <span>{prodMode ? 'AI/RAG Active' : 'Heuristic Mode'}</span>
+                    <span>LLM Calls: {dclState?.llm?.calls || 0}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Activity className="w-3 h-3 text-blue-400" />
